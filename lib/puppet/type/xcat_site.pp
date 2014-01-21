@@ -3,55 +3,55 @@ Puppet::Type.newtype(:xcat_site) do
   @doc = 'Manage the xcat site table.'
 
   newparam(:name, :namevar=>true) do
-    desc "Does nothing."
+    desc 'Does nothing.'
   end
 
   newproperty(:installdir) do
-    desc "Install directory."
+    desc 'Install directory.'
   end
 
   newproperty(:forwarders) do
-    desc "DNS Forwarders."
+    desc 'DNS Forwarders.'
   end
 
   newproperty(:dhcpinterfaces) do
-    desc "DHCP Interfaces."
+    desc 'DHCP Interfaces.'
   end
 
   newproperty(:master) do
-    desc "IP of master node."
+    desc 'IP of master node.'
   end
 
   newproperty(:nameservers) do
-    desc "IPs of nameservers (default: master node)."
+    desc 'IPs of nameservers (default: master node).'
   end
 
   newproperty(:nodesyncfiledir) do
-    desc "Directory for node syncing."
+    desc 'Directory for node syncing.'
   end
 
   newproperty(:tftpdir) do
-    desc "TFTP directory."
+    desc 'TFTP directory.'
   end
 
   newproperty(:xcatport) do
-    desc "XCat Port."
+    desc 'XCat Port.'
   end
 
   newproperty(:xcatiport) do
-    desc "XCat IPort."
+    desc 'XCat IPort.'
   end
 
   newproperty(:timezone) do
-    desc "Timezone."
+    desc 'Timezone.'
   end
 
   newproperty(:sshbetweennodes) do
-    desc "SSH Between Nodes setting.  See XCat documentation for valid settings."
+    desc 'SSH Between Nodes setting.  See XCat documentation for valid settings.'
   end
 
   newproperty(:dhcplease) do
-    desc "lease time for the dhcp client."
+    desc 'lease time for the dhcp client.'
   end
 
 end
