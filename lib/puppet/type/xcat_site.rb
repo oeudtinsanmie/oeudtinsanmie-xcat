@@ -8,6 +8,7 @@ Puppet::Type.newtype(:xcat_resource) do
 
   newparam(:type) do
     desc 'XCat Resource type: object or table'
+    newvalues(:object, :table)
   end
   
   newproperty(:value, :array_matching => :all) do
