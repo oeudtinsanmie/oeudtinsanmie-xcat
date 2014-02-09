@@ -112,13 +112,11 @@ Puppet::Type.newtype(:group) do
   end
 
   newproperty(:hcp) do
-    desc <<-eos 
-    (ppc.hcp, zvm.hcp) The hardware control point for this node (HMC, IVM, Frame or CEC). Do not need to set for BPAs and FSPs.
+    desc '(ppc.hcp, zvm.hcp) The hardware control point for this node (HMC, IVM, Frame or CEC). Do not need to set for BPAs and FSPs.
 
     or
     
     The hardware control point for this node.'
-    eos
   end
 
   newproperty(:height) do
