@@ -2,6 +2,8 @@
 Puppet::Type.newtype(:xcat_boottarget) do
   @doc = 'Specify non-standard initrd, kernel, and parameters that should be used for a given profile.'
 
+  ensurable
+  
   newparam(:name, :namevar=>true) do
     desc 'bprofile  All nodes with a nodetype.profile value equal to this value
                  and nodetype.os set to "boottarget", will use the associated

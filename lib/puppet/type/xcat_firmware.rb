@@ -2,6 +2,8 @@
 Puppet::Type.newtype(:xcat_firmware) do
   @doc = 'Maps node to firmware values to be used for setup at node discovery or later'
 
+  ensurable
+  
   newparam(:name, :namevar=>true) do
     desc 'node      The node id.'
   end

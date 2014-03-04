@@ -2,6 +2,8 @@
 Puppet::Type.newtype(:xcat_node) do
   @doc = 'a logical object definition in the xCAT database.'
 
+  ensurable
+  
   newparam(:node, :namevar=>true) do
     desc 'node      The node id.'
   end

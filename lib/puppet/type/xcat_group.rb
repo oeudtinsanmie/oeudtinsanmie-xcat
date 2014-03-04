@@ -2,6 +2,8 @@
 Puppet::Type.newtype(:xcat_group) do
   @doc = 'group - a logical object definition in the xCAT database.'
 
+  ensurable
+  
   newparam(:groupname, :namevar=>true) do
     desc '(nodegroup.groupname) Name of the group.'
   end

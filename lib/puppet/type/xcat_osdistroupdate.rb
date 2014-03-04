@@ -2,6 +2,8 @@
 Puppet::Type.newtype(:xcat_osdistroupdate) do
   @doc = 'a logical object definition in the xCAT database.'
 
+  ensurable
+  
   newparam(:osupdatename, :namevar=>true) do
     desc 'Name of OS update. (e.g. rhn-update1)'
   end

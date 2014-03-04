@@ -6,6 +6,10 @@ Puppet::Type.newtype(:xcat_site_attribute) do
     desc 'Attribute name'
   end
   
+  newproperty(:sitename) do
+    desc 'Name of the xcat site object'
+  end
+  
   newproperty(:value, :array_matching => :all) do
     desc 'Array of values for this XCat Site Attribute'
     def insync?(is)

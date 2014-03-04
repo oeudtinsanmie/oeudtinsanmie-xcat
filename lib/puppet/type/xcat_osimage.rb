@@ -2,6 +2,8 @@
 Puppet::Type.newtype(:xcat_osimage) do
   @doc = 'a logical object definition in the xCAT database.'
 
+  ensurable
+  
   newparam(:imagename, :namevar=>true) do
     desc 'The name of this xCAT OS image definition.'
   end

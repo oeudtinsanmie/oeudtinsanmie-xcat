@@ -2,6 +2,8 @@
 Puppet::Type.newtype(:xcat_route) do
   @doc = 'a logical object definition in the xCAT database.'
 
+  ensurable
+  
   newparam(:routename, :namevar=>true) do
     desc 'Name used to identify this route.'
   end

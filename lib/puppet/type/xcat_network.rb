@@ -1,7 +1,9 @@
 # This has to be a separate type to enable collecting
 Puppet::Type.newtype(:xcat_network) do
   @doc = 'a logical object definition in the xCAT database.'
-
+  
+  ensurable
+  
   newparam(:netname, :namevar=>true) do
     desc 'Name used to identify this network definition.'
   end

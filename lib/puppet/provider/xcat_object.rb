@@ -37,7 +37,8 @@ class Puppet::Provider::xcat_object < Puppet::Provider
     hash_list = obj_str.split("\n")
     inst_name = hash.shift
     inst_hash = Hash.new
-    inst_hash[:name] = inst_name
+    inst_hash[:name]   = inst_name
+    inst_hash[:ensure] = :present
     hash_list.each { |line|
       key, value = line.split("=")
       inst_hash[key.lstrip] = value
@@ -80,7 +81,9 @@ class Puppet::Provider::xcat_object < Puppet::Provider
         @property_hash.clear
       else
         @property_flush.each { |key, value|
-          cmd_list += ["#{key}=#{value}"]
+          if (key != :name && key != :ensure) 
+            cmd_list += ["#{key}=#{value}"]
+          end
         }
         if (@property_flush[:ensure] == :present)
           # mkdef
