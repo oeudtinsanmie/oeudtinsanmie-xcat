@@ -1,5 +1,5 @@
 # This has to be a separate type to enable collecting
-Puppet::Type.newtype(:route) do
+Puppet::Type.newtype(:xcat_osimage) do
   @doc = 'a logical object definition in the xCAT database.'
 
   newparam(:imagename, :namevar=>true) do

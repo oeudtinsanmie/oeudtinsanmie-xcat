@@ -1,5 +1,5 @@
 # This has to be a separate type to enable collecting
-Puppet::Type.newtype(:group) do
+Puppet::Type.newtype(:xcat_group) do
   @doc = 'group - a logical object definition in the xCAT database.'
 
   newparam(:groupname, :namevar=>true) do

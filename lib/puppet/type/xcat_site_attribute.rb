@@ -1,18 +1,13 @@
 # This has to be a separate type to enable collecting
-Puppet::Type.newtype(:xcat_resource) do
+Puppet::Type.newtype(:xcat_site_attribute) do
   @doc = 'Manage the xcat site table.'
 
   newparam(:name, :namevar=>true) do
-    desc 'XCat Resource name'
-  end
-
-  newparam(:type) do
-    desc 'XCat Resource type: object or table'
-    newvalues(:object, :table)
+    desc 'Attribute name'
   end
   
   newproperty(:value, :array_matching => :all) do
-    desc 'Array of values for this XCat Resource'
+    desc 'Array of values for this XCat Site Attribute'
     def insync?(is)
       # The current value may be nil and we don't
       # want to call sort on it so make sure we have arrays 

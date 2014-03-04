@@ -1,5 +1,5 @@
 # This has to be a separate type to enable collecting
-Puppet::Type.newtype(:site) do
+Puppet::Type.newtype(:xcat_node) do
   @doc = 'a logical object definition in the xCAT database.'
 
   newparam(:node, :namevar=>true) do

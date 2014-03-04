@@ -1,5 +1,5 @@
 # This has to be a separate type to enable collecting
-Puppet::Type.newtype(:boottarget) do
+Puppet::Type.newtype(:xcat_boottarget) do
   @doc = 'Specify non-standard initrd, kernel, and parameters that should be used for a given profile.'
 
   newparam(:name, :namevar=>true) do

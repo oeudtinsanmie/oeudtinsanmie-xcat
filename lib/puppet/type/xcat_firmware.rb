@@ -1,5 +1,5 @@
 # This has to be a separate type to enable collecting
-Puppet::Type.newtype(:firmware) do
+Puppet::Type.newtype(:xcat_firmware) do
   @doc = 'Maps node to firmware values to be used for setup at node discovery or later'
 
   newparam(:name, :namevar=>true) do
