@@ -1,4 +1,4 @@
-Puppet::Type.type(:xcat_site_attribute).provide(:xcat, :parent => Puppet::Provider) do
+Puppet::Type.type(:xcat_site_attribute).provide(:xcat) do
 
   mk_resource_methods
   
@@ -9,7 +9,7 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat, :parent => Puppet::Provid
       hsh = make_hash(obj)
       site = hsh.delete(:name)
       insts += hsh.collect { |key, value|
-        kevalue = Hash.new
+        keyvalue = Hash.new
         keyvalue[:name]   = key
         keyvalue[:sitename] = site
         keyvalue[:value]  = value
@@ -22,7 +22,7 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat, :parent => Puppet::Provid
   def self.xcat_type
     "site"
   end
-  
+
   def xcat_type
     "site"
   end
