@@ -26,6 +26,7 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat, :parent => Puppet::Provid
   def flush
     if @property_flush
       cmd_list = ["-t", xcat_type, "-o", resource[:sitename], "#{resource[:name]}=#{resource[:value]}"]
+      Puppet.debug "chdef " + cmd_list
       chdef(cmd_list)
       @property_flush = nil
     end

@@ -77,6 +77,7 @@ class Puppet::Provider::xcat_object < Puppet::Provider
       cmd_list = ["-t", xcat_type, "-o", :name]
       if (@property_flush[:ensure] == :absent)
         # rmdef
+        Puppet.debug "rmdef " + cmd_list
         rmdef(cmd_list)
         @property_hash.clear
       else
@@ -87,9 +88,11 @@ class Puppet::Provider::xcat_object < Puppet::Provider
         }
         if (@property_flush[:ensure] == :present)
           # mkdef
+          Puppet.debug "mkdef " + cmd_list
           mkdef(cmd_list)
         else
           # chdef
+          Puppet.debug "chdef " + cmd_list
           chdef(cmd_list)
         end
       end
