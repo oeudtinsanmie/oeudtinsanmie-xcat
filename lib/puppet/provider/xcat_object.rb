@@ -1,4 +1,4 @@
-class Puppet::Provider::xcat_object < Puppet::Provider
+class Puppet::Provider::XCat_Object < Puppet::Provider
 
   commands  :lsdef => '/opt/xcat/bin/lsdef',
             :mkdef => '/opt/xcat/bin/mkdef',

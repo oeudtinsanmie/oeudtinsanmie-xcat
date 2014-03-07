@@ -1,4 +1,4 @@
-class Puppet::Provider::xcat_node < Puppet::Provider
+class Puppet::Provider::XCat_Node < Puppet::Provider
 
   commands  :nodels => /opt/xcat/sbin/nodels,
             :nodech => /opt.xcat/sbin/nodech
