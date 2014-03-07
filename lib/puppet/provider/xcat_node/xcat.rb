@@ -2,7 +2,7 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider) do
 
   mk_resource_methods
   
-  def xcat_type
+  def self.xcat_type
     "node"
   end
 
