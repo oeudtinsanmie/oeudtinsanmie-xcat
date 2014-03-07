@@ -66,7 +66,7 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat, :parent => Puppet::Provid
   
   def self.make_hash(obj_str)
     hash_list = obj_str.split("\n")
-    inst_name = hash.shift
+    inst_name = hash_list.shift
     inst_hash = Hash.new
     inst_hash[:name]   = inst_name
     inst_hash[:ensure] = :present
