@@ -148,6 +148,7 @@ Puppet::Type.newtype(:xcat_node) do
         is == @should
       end
     end
+    defaultto("all")
   end
   
   newproperty(:hcp) do

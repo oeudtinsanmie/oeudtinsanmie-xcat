@@ -1,4 +1,4 @@
-Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider) do
+Puppet::Type.type(:xcat_node).provide(:xcat) do
 
   mk_resource_methods
   
@@ -6,7 +6,10 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider) do
     "node"
   end
 
-  
+  def xcat_type
+    "node"
+  end
+
   commands  :lsdef => '/opt/xcat/bin/lsdef',
             :mkdef => '/opt/xcat/bin/mkdef',
             :rmdef => '/opt/xcat/bin/rmdef',
@@ -25,8 +28,26 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider) do
     }
   end
   
+  def list_obj (obj_name = nil)
+    cmd_list = ["-l", "-t", xcat_type()]
+    if (obj_name)
+      cmd_list += ["-o", obj_name]
+    end
+
+    begin
+      output = lsdef(cmd_list)
+    rescue Puppet::ExecutionFailure => e
+      Puppet.debug "lsdef had an error -> #{e.inspect}"
+      return {}
+    end
+
+    obj_strs = output.split("Object name: ")
+    obj_strs.delete("")
+    obj_strs
+  end
+
   def self.list_obj (obj_name = nil)
-    cmd_list = ["-l", "-t", xcat_type]
+    cmd_list = ["-l", "-t", xcat_type()]
     if (obj_name) 
       cmd_list += ["-o", obj_name]
     end
@@ -56,6 +77,19 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider) do
     inst_hash
   end
   
+  def make_hash(obj_str)
+    hash_list = obj_str.split("\n")
+    inst_name = hash_list.shift
+    inst_hash = Hash.new
+    inst_hash[:name]   = inst_name
+    inst_hash[:ensure] = :present
+    hash_list.each { |line|
+      key, value = line.split("=")
+      inst_hash[key.lstrip] = value
+    }
+    inst_hash
+  end
+
   def self.prefetch(resources)
     instances.each do |prov|
       if resource = resources[prov.name]
@@ -63,22 +97,22 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider) do
       end
     end
   end
-  
-  def self.exists?
+ 
+  def exists?
     @property_hash[:ensure] == :present
   end
   
-  def self.create
+  def create
     @property_flush[:ensure] = :present
   end
   
-  def self.destroy
+  def destroy
     @property_flush[:ensure] = :absent
   end
   
-  def self.flush
+  def flush
     if @property_flush
-      cmd_list = ["-t", xcat_type, "-o", :name]
+      cmd_list = ["-t", self.xcat_type(), "-o", resource[:name]]
       if (@property_flush[:ensure] == :absent)
         # rmdef
         begin
@@ -88,8 +122,8 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider) do
         end
         @property_hash.clear
       else
-        @property_flush.each { |key, value|
-          if (key != :name && key != :ensure) 
+        resource.to_hash.each { |key, value|
+          if not [:name, :ensure, :provider, :loglevel].include?(key) 
             cmd_list += ["#{key}=#{value}"]
           end
         }
@@ -112,7 +146,7 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider) do
       @property_flush = nil
     end
     # refresh @property_hash
-    @property_hash = make_hash(list_obj(:name)[0])
+    @property_hash = self.make_hash(list_obj(:name)[0])
   end
 end
 
