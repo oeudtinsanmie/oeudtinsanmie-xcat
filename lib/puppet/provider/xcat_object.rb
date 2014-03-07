@@ -20,7 +20,10 @@ class Puppet::Provider::xcat_object < Puppet::Provider
   
   def list_obj (obj_name = nil)
     cmd_list = ["-l", "-t", xcat_type]
-    if (obj_name) cmd_list += ["-o", obj_name]
+    if (obj_name) 
+      cmd_list += ["-o", obj_name]
+    end
+    
     begin
       output = lsdef(cmd_list)
     rescue Puppet::ExecutionFailure => e
