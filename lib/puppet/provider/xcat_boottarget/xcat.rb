@@ -65,12 +65,6 @@ Puppet::Type.type(:xcat_boottarget).provide(:xcat, :parent => Puppet::Provider) 
     @property_hash[:ensure] == :present
   end
   
-  # mk_resource_methods foreach child
-  
-  def xcat_type
-    raise Puppet::DevError, "xcat_type for #{self.name} provider has not been defined.  Unable to use xcat object commands."
-  end
-  
   def create
     @property_flush[:ensure] = :present
   end
