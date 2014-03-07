@@ -25,7 +25,7 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider) do
     }
   end
   
-  def list_obj (obj_name = nil)
+  def self.list_obj (obj_name = nil)
     cmd_list = ["-l", "-t", xcat_type]
     if (obj_name) 
       cmd_list += ["-o", obj_name]
@@ -43,7 +43,7 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider) do
     obj_strs
   end
   
-  def make_hash(obj_str)
+  def self.make_hash(obj_str)
     hash_list = obj_str.split("\n")
     inst_name = hash.shift
     inst_hash = Hash.new
@@ -64,19 +64,19 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider) do
     end
   end
   
-  def exists?
+  def self.exists?
     @property_hash[:ensure] == :present
   end
   
-  def create
+  def self.create
     @property_flush[:ensure] = :present
   end
   
-  def destroy
+  def self.destroy
     @property_flush[:ensure] = :absent
   end
   
-  def flush
+  def self.flush
     if @property_flush
       cmd_list = ["-t", xcat_type, "-o", :name]
       if (@property_flush[:ensure] == :absent)
