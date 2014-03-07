@@ -2,10 +2,13 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider) do
 
   mk_resource_methods
   
+  def xcat_type
+    self.xcat_type
+  end
+  
   def self.xcat_type
     "node"
   end
-
   
   commands  :lsdef => '/opt/xcat/bin/lsdef',
             :mkdef => '/opt/xcat/bin/mkdef',
@@ -64,19 +67,19 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider) do
     end
   end
   
-  def self.exists?
+  def exists?
     @property_hash[:ensure] == :present
   end
   
-  def self.create
+  def create
     @property_flush[:ensure] = :present
   end
   
-  def self.destroy
+  def destroy
     @property_flush[:ensure] = :absent
   end
   
-  def self.flush
+  def flush
     if @property_flush
       cmd_list = ["-t", xcat_type, "-o", :name]
       if (@property_flush[:ensure] == :absent)
@@ -88,7 +91,7 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider) do
         end
         @property_hash.clear
       else
-        @property_flush.each { |key, value|
+        resource.each { |key, value|
           if (key != :name && key != :ensure) 
             cmd_list += ["#{key}=#{value}"]
           end

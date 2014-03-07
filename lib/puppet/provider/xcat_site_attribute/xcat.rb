@@ -9,6 +9,7 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat, :parent => Puppet::Provid
       hsh = make_hash(obj)
       site = hsh.delete(:name)
       insts += hsh.collect { |key, value|
+        kevalue = Hash.new
         keyvalue[:name]   = key
         keyvalue[:sitename] = site
         keyvalue[:value]  = value
@@ -22,7 +23,11 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat, :parent => Puppet::Provid
     "site"
   end
   
-  def self.flush
+  def xcat_type
+    "site"
+  end
+  
+  def flush
     if @property_flush
       cmd_list = ["-t", xcat_type, "-o", resource[:sitename], "#{resource[:name]}=#{resource[:value]}"]
       begin
@@ -85,15 +90,15 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat, :parent => Puppet::Provid
     end
   end
   
-  def self.exists?
+  def exists?
     @property_hash[:ensure] == :present
   end
   
-  def self.create
+  def create
     @property_flush[:ensure] = :present
   end
   
-  def self.destroy
+  def destroy
     @property_flush[:ensure] = :absent
   end
 end
