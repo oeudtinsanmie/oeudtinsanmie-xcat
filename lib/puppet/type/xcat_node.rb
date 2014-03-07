@@ -137,7 +137,7 @@ Puppet::Type.newtype(:xcat_node) do
   end
   
   newproperty(:groups, :array_matching => :all) do
-    desc '(puppet uses an array here) A comma-delimited list of groups this node is a member of. Group names are arbitrary, except all nodes should be part of the 'all' group. Internal group names are designated by using __<groupname>. For example, __Unmanaged, could be the internal name for a group of nodes that is not managed by xCAT. Admins should avoid using the __ characters when defining their groups.'
+    desc '(puppet uses an array here) A comma-delimited list of groups this node is a member of. Group names are arbitrary, except all nodes should be part of the \'all\' group. Internal group names are designated by using __<groupname>. For example, __Unmanaged, could be the internal name for a group of nodes that is not managed by xCAT. Admins should avoid using the __ characters when defining their groups.'
     def insync?(is)
       # The current value may be nil and we don't
       # want to call sort on it so make sure we have arrays 
