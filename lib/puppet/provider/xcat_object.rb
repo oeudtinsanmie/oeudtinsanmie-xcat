@@ -77,8 +77,11 @@ class Puppet::Provider::xcat_object < Puppet::Provider
       cmd_list = ["-t", xcat_type, "-o", :name]
       if (@property_flush[:ensure] == :absent)
         # rmdef
-        Puppet.debug "rmdef " + cmd_list
-        rmdef(cmd_list)
+        begin
+          rmdef(cmd_list)
+        rescue Puppet::ExecutionFailure => e
+          raise Puppet::Error, "rmdef #{cmd_list} failed to run: #{e}"
+        end
         @property_hash.clear
       else
         @property_flush.each { |key, value|
@@ -88,12 +91,18 @@ class Puppet::Provider::xcat_object < Puppet::Provider
         }
         if (@property_flush[:ensure] == :present)
           # mkdef
-          Puppet.debug "mkdef " + cmd_list
-          mkdef(cmd_list)
+          begin
+            mkdef(cmd_list)
+          rescue Puppet::ExecutionFailure => e
+            raise Puppet::Error, "mkdef #{cmd_list} failed to run: #{e}"
+          end
         else
           # chdef
-          Puppet.debug "chdef " + cmd_list
-          chdef(cmd_list)
+          begin
+            chdef(cmd_list)
+          rescue Puppet::ExecutionFailure => e
+            raise Puppet::Error, "chdef #{cmd_list} failed to run: #{e}"
+          end
         end
       end
       @property_flush = nil
