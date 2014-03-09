@@ -29,7 +29,12 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat) do
   
   def flush
     if @property_flush
-      cmd_list = ["-t", xcat_type, "-o", resource[:sitename], "#{resource[:name]}=#{resource[:value]}"]
+      if resource[:value].kind_of?(Array)
+        value = resource[:value].join(',')
+      else
+        value = resource[:value]
+      end
+      cmd_list = ["-t", xcat_type, "-o", resource[:sitename], "#{resource[:name]}=#{value}"]
       begin
         chdef(cmd_list)
       rescue Puppet::ExecutionFailure => e
