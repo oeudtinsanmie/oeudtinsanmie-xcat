@@ -36,6 +36,8 @@
 # Copyright 2011 Your name here, unless otherwise noted.
 #
 class xcat {
+    include xcat::params, xcat::installfrom, xcat::yuminstall
+
 
 
 }
