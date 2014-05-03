@@ -28,7 +28,7 @@ Attributes of the XCAT site table can also be configured using the xcat_site_att
         value => [ 'eth0.1004', 'eth0.1107', 'eth1' ],
     }
     
-Base images can be installed using the xcat::image class, which uses the xcat copycds command via the xcat_copycds type and provider.  Images may be added by providing a url to a .iso file to be downloaded via wget (using the [maestrodev-wget](https://forge.puppetlabs.com/maestrodev/wget) module).  Alternatively, you may leave the url parameter out of your definition, or specify it as undef to load from .iso files that are part of the file system, however they were added previously or through other parts of your Puppet manifest.
+Base images can be installed using the xcat::image class, which uses the xcat copycds command via the xcat_copycds type and provider.  Images may be added by providing a url to a .iso file to be downloaded via wget (using the [maestrodev](https://forge.puppetlabs.com/maestrodev)/[wget](https://forge.puppetlabs.com/maestrodev/wget) module).  Alternatively, you may leave the url parameter out of your definition, or specify it as undef to load from .iso files that are part of the file system, however they were added previously or through other parts of your Puppet manifest.
 
     xcat::image{ "from_my_file" :
     	url		   => undef,
