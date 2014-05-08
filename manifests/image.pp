@@ -1,6 +1,7 @@
 include xcat
 
 define xcat::image(
+	$ensure		= present,
 	$url		= undef,
 	$filepath,
 	$distro,
@@ -13,6 +14,7 @@ define xcat::image(
 			verbose => false,
 		} ->
 		xcat_copycds { "${distro}-${arch}" :
+			ensure  => $ensure,
 			distro  => $distro,
 			file 	=> $filepath,
 			arch 	=> $arch,
@@ -20,6 +22,7 @@ define xcat::image(
 	} 
 	else {
 		xcat_copycds { "${distro}-${arch}" :
+                        ensure 	=> $ensure,
 			distro  => $distro,
 			file 	=> $filepath,
 			arch 	=> $arch,
