@@ -146,7 +146,7 @@ Puppet::Type.type(:xcat_node).provide(:xcat) do
       @property_flush = nil
     end
     # refresh @property_hash
-    @property_hash = self.make_hash(list_obj(:name)[0])
+    @property_hash = self.make_hash(list_obj(resource[:name])[0])
   end
 end
 
