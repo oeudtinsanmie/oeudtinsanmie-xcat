@@ -123,7 +123,7 @@ Puppet::Type.type(:xcat_network).provide(:xcat) do
         @property_hash.clear
       else
         resource.to_hash.each { |key, value|
-          if not [:name, :ensure, :provider, :loglevel].include?(key) 
+          if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key) 
             cmd_list += ["#{key}=#{value}"]
           end
         }
