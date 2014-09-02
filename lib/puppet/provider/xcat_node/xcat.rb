@@ -39,7 +39,16 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider::XCatOb
   end
   
   def flush
-    doflush(xcat_type)
+    begin
+      doflush(xcat_type)
+      
+      @property_flush = nil
+      # refresh @property_hash
+      @property_hash = make_hash(list_obj(xcat_type, resource[:name])[0])
+    rescue Exception => e
+      @property_hash.clear
+      raise Puppet::Error, e
+    end
   end
 end
 
