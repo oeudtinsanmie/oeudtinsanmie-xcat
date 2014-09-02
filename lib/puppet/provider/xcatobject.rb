@@ -7,17 +7,17 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
             :rmdef => '/opt/xcat/bin/rmdef',
             :chdef => '/opt/xcat/bin/chdef'  
           
-  def list_obj (xcat_type, obj_name = nil)
+  def self.list_obj (xcat_type, obj_name = nil)
     Puppet.debug "Listing xcat objects of type #{xcat_type}"
     if(obj_name) then
       Puppet.debug "Looking for object #{obj_name}"
     end
-#    list_obj_strings(xcat_type, obj_name).collect { |objstr|
-#        make_hash(objstr)
-#    }
+    list_obj_strings(xcat_type, obj_name).collect { |objstr|
+        make_hash(objstr)
+    }
   end
 
-  def list_obj_strings (xcat_type, obj_name = nil)
+  def self.list_obj_strings (xcat_type, obj_name = nil)
     cmd_list = ["-l", "-t", xcat_type]
     if (obj_name) 
       cmd_list += ["-o", obj_name]
@@ -35,7 +35,7 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
     obj_strs
   end
   
-  def make_hash(obj_str)
+  def self.make_hash(obj_str)
     hash_list = obj_str.split("\n")
     inst_name = hash_list.shift
     inst_hash = Hash.new
@@ -51,7 +51,7 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
     Puppet::Util::symbolizehash(inst_hash)
   end
 
-  def doflush (xcat_type, prop_flush)
+  def self.doflush (xcat_type, prop_flush)
     if prop_flush
       cmd_list = ["-t", xcat_type, "-o", resource[:name]]
       if (prop_flush[:ensure] == :absent)
