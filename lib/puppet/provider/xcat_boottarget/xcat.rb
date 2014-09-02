@@ -1,56 +1,19 @@
-Puppet::Type.type(:xcat_boottarget).provide(:xcat, :parent => Puppet::Provider) do
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'xcatobject'))
+Puppet::Type.type(:xcat_boottarget).provide(:xcat, :parent => Puppet::Provider::Xcatobject) do
+
+  mk_resource_methods
   
-  def xcat_type
-    "boottarget"
-  end
+  @xcat_type = "boottarget"
   
-  commands  :lsdef => '/opt/xcat/bin/lsdef',
-            :mkdef => '/opt/xcat/bin/mkdef',
-            :rmdef => '/opt/xcat/bin/rmdef',
-            :chdef => '/opt/xcat/bin/chdef'
-            
   def initialize(value={})
     super(value)
     @property_flush = {}
   end
             
   def self.instances
-    # lsdef
-    
-    list_obj().collect { |obj|
-      new(make_hash(obj))
+    list_obj(@xcat_type).collect { |obj|
+      new(obj)
     }
-  end
-  
-  def list_obj (obj_name = nil)
-    cmd_list = ["-l", "-t", xcat_type]
-    if (obj_name) 
-      cmd_list += ["-o", obj_name]
-    end
-    
-    begin
-      output = lsdef(cmd_list)
-    rescue Puppet::ExecutionFailure => e
-      Puppet.debug "lsdef had an error -> #{e.inspect}"
-      return {}
-    end
-    
-    obj_strs = output.split("Object name: ")
-    obj_strs.delete("")
-    obj_strs
-  end
-  
-  def make_hash(obj_str)
-    hash_list = obj_str.split("\n")
-    inst_name = hash.shift
-    inst_hash = Hash.new
-    inst_hash[:name]   = inst_name
-    inst_hash[:ensure] = :present
-    hash_list.each { |line|
-      key, value = line.split("=")
-      inst_hash[key.lstrip] = value
-    }
-    inst_hash
   end
   
   def self.prefetch(resources)
@@ -60,7 +23,7 @@ Puppet::Type.type(:xcat_boottarget).provide(:xcat, :parent => Puppet::Provider) 
       end
     end
   end
-  
+
   def exists?
     @property_hash[:ensure] == :present
   end
@@ -74,42 +37,15 @@ Puppet::Type.type(:xcat_boottarget).provide(:xcat, :parent => Puppet::Provider) 
   end
   
   def flush
-    if @property_flush
-      cmd_list = ["-t", xcat_type, "-o", :name]
-      if (@property_flush[:ensure] == :absent)
-        # rmdef
-        begin
-          rmdef(cmd_list)
-        rescue Puppet::ExecutionFailure => e
-          raise Puppet::Error, "rmdef #{cmd_list} failed to run: #{e}"
-        end
-        @property_hash.clear
-      else
-        @property_flush.each { |key, value|
-          if (key != :name && key != :ensure) 
-            cmd_list += ["#{key}=#{value}"]
-          end
-        }
-        if (@property_flush[:ensure] == :present)
-          # mkdef
-          begin
-            mkdef(cmd_list)
-          rescue Puppet::ExecutionFailure => e
-            raise Puppet::Error, "mkdef #{cmd_list} failed to run: #{e}"
-          end
-        else
-          # chdef
-          begin
-            chdef(cmd_list)
-          rescue Puppet::ExecutionFailure => e
-            raise Puppet::Error, "chdef #{cmd_list} failed to run: #{e}"
-          end
-        end
-      end
+    begin
+      super.doflush(@xcat_type)
+      
       @property_flush = nil
+      # refresh @property_hash
+      @property_hash = list_obj(@xcat_type, resource[:name])[0]
+    rescue Exception => e
+      @property_hash.clear
+      raise Puppet::Error, e
     end
-    # refresh @property_hash
-    @property_hash = make_hash(list_obj(:name)[0])
   end
 end
-
