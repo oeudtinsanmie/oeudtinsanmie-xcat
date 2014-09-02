@@ -67,11 +67,12 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
         end
       else
         resource.to_hash.each { |key, value|
-          if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key) 
+          if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key)
             if value.is_a?(Array)
-              value = value.join(",")
+              cmd_list += ["#{key}=#{value.join()}"]
+            else
+              cmd_list += ["#{key}=#{value}"]
             end
-            cmd_list += ["#{key}=#{value}"]
           end
         }
         if (prop_flush[:ensure] == :present)
