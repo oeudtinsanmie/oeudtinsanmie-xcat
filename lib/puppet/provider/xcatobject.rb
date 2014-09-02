@@ -39,17 +39,16 @@ class Puppet::Provider::XCatObject < Puppet::Provider
     Puppet::Util::symbolizehash(inst_hash)
   end
 
-  def doflush (xcat_type)
-    if @property_flush
+  def doflush (xcat_type, prop_flush)
+    if prop_flush
       cmd_list = ["-t", xcat_type, "-o", resource[:name]]
-      if (@property_flush[:ensure] == :absent)
+      if (prop_flush[:ensure] == :absent)
         # rmdef
         begin
           rmdef(cmd_list)
         rescue Puppet::ExecutionFailure => e
           raise Puppet::Error, "rmdef #{cmd_list} failed to run: #{e}"
         end
-        @property_hash.clear
       else
         resource.to_hash.each { |key, value|
           if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key) 
@@ -59,7 +58,7 @@ class Puppet::Provider::XCatObject < Puppet::Provider
             cmd_list += ["#{key}=#{value}"]
           end
         }
-        if (@property_flush[:ensure] == :present)
+        if (prop_flush[:ensure] == :present)
           # mkdef
           begin
             mkdef(cmd_list)
@@ -75,9 +74,6 @@ class Puppet::Provider::XCatObject < Puppet::Provider
           end
         end
       end
-      @property_flush = nil
     end
-    # refresh @property_hash
-    @property_hash = make_hash(list_obj(xcat_type, resource[:name])[0])
   end
 end
