@@ -8,9 +8,13 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
             :chdef => '/opt/xcat/bin/chdef'  
           
   def list_obj (xcat_type, obj_name = nil)
-    list_obj_strings(xcat_type, obj_name).collect { |objstr|
-        make_hash(objstr)
-    }
+    Puppet.debug "Listing xcat objects of type #{xcat_type}"
+    if(obj_name) then
+      Puppet.debug "Looking for object #{obj_name}"
+    end
+#    list_obj_strings(xcat_type, obj_name).collect { |objstr|
+#        make_hash(objstr)
+#    }
   end
 
   def list_obj_strings (xcat_type, obj_name = nil)

@@ -11,13 +11,13 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider::Xcatob
   end
             
   def self.instances
-    super.list_obj(@xcat_type).collect { |obj|
-      new(obj)
-    }
+#    super.list_obj(@xcat_type).collect { |obj|
+#      new(obj)
+#    }
   end
   
   def self.prefetch(resources)
-    self.instances.each do |prov|
+    instances.each do |prov|
       if resource = resources[prov.name]
         resource.provider = prov
       end
@@ -42,7 +42,7 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider::Xcatob
       
       @property_flush = nil
       # refresh @property_hash
-      @property_hash = super.list_obj(@xcat_type, resource[:name])[0])
+      @property_hash = super.list_obj(@xcat_type, resource[:name])[0]
     rescue Exception => e
       @property_hash.clear
       raise Puppet::Error, e
