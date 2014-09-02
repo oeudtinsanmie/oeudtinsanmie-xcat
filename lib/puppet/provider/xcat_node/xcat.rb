@@ -1,3 +1,4 @@
+require 'pp'
 Puppet::Type.type(:xcat_node).provide(:xcat) do
 
   mk_resource_methods
@@ -24,7 +25,7 @@ Puppet::Type.type(:xcat_node).provide(:xcat) do
     # lsdef
     
     list_obj().collect { |obj|
-      new(make_hash(obj))
+      new(Puppet::Util::symbolizehash(make_hash(obj)))
     }
   end
   
@@ -72,8 +73,11 @@ Puppet::Type.type(:xcat_node).provide(:xcat) do
     inst_hash[:ensure] = :present
     hash_list.each { |line|
       key, value = line.split("=")
+      Puppet.debug "#{key} == #{value}"
       inst_hash[key.lstrip] = value
+      Puppet.debug "#{key.lstrip} == #{inst_hash[key.lstrip]}"
     }
+    Puppet.debug pp inst_hash
     inst_hash
   end
   
@@ -124,6 +128,9 @@ Puppet::Type.type(:xcat_node).provide(:xcat) do
       else
         resource.to_hash.each { |key, value|
           if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key) 
+            if value.is_a?(Array)
+              value = value.join()
+            end
             cmd_list += ["#{key}=#{value}"]
           end
         }
