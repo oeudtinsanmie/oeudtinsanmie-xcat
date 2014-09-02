@@ -69,8 +69,10 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
         resource.to_hash.each { |key, value|
           if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key)
             if value.is_a?(Array)
-              cmd_list += ["#{key}=#{value.join()}"]
+              Puppet.debug "Setting #{key} = #{value.join(',')}"
+              cmd_list += ["#{key}=#{value.join(',')}"]
             else
+              Puppet.debug "Setting #{key} = #{value}"
               cmd_list += ["#{key}=#{value}"]
             end
           end
