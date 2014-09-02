@@ -44,7 +44,11 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
     hash_list.each { |line|
       key, value = line.split("=")
       # Puppet.debug "#{key} == #{value}"
-      inst_hash[key.lstrip] = value.split(",")
+      if (value.include? ",") then 
+        inst_hash[key.lstrip] = value.split(",")
+      else
+        inst_hash[key.lstrip] = value
+      end
       # Puppet.debug "#{key.lstrip} == #{inst_hash[key.lstrip]}"
     }
     # Puppet.debug pp inst_hash
