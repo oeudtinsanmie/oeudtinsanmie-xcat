@@ -7,6 +7,10 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider::XCatOb
     "node"
   end
   
+  def self.xcat_type
+    self.class.xcat_type
+  end
+  
   def initialize(value={})
     super(value)
     @property_flush = {}
@@ -15,7 +19,7 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider::XCatOb
   def self.instances
     # lsdef
     
-    list_obj(xcat_type()).collect { |obj|
+    list_obj(xcat_type).collect { |obj|
       new(make_hash(obj))
     }
   end
@@ -42,11 +46,11 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider::XCatOb
   
   def flush
     begin
-      doflush(xcat_type())
+      doflush(xcat_type)
       
       @property_flush = nil
       # refresh @property_hash
-      @property_hash = make_hash(list_obj(xcat_type(), resource[:name])[0])
+      @property_hash = make_hash(list_obj(xcat_type, resource[:name])[0])
     rescue Exception => e
       @property_hash.clear
       raise Puppet::Error, e
