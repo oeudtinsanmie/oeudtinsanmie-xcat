@@ -78,6 +78,6 @@ class Puppet::Provider::XCatObject < Puppet::Provider
       @property_flush = nil
     end
     # refresh @property_hash
-    @property_hash = self.make_hash(list_obj(xcat_type, resource[:name])[0])
+    @property_hash = make_hash(list_obj(xcat_type, resource[:name])[0])
   end
 end
