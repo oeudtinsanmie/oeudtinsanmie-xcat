@@ -5,8 +5,8 @@ class Puppet::Provider::XCatObject < Puppet::Provider
             :rmdef => '/opt/xcat/bin/rmdef',
             :chdef => '/opt/xcat/bin/chdef'
             
-  def list_obj (obj_name = nil)
-    cmd_list = ["-l", "-t", xcat_type()]
+  def list_obj (xcat_type, obj_name = nil)
+    cmd_list = ["-l", "-t", xcat_type]
     if (obj_name) 
       cmd_list += ["-o", obj_name]
     end
@@ -39,9 +39,9 @@ class Puppet::Provider::XCatObject < Puppet::Provider
     Puppet::Util::symbolizehash(inst_hash)
   end
 
-  def doflush
+  def doflush (xcat_type)
     if @property_flush
-      cmd_list = ["-t", self.xcat_type(), "-o", resource[:name]]
+      cmd_list = ["-t", xcat_type, "-o", resource[:name]]
       if (@property_flush[:ensure] == :absent)
         # rmdef
         begin
@@ -78,6 +78,6 @@ class Puppet::Provider::XCatObject < Puppet::Provider
       @property_flush = nil
     end
     # refresh @property_hash
-    @property_hash = self.make_hash(list_obj(resource[:name])[0])
+    @property_hash = self.make_hash(list_obj(xcat_type, resource[:name])[0])
   end
 end
