@@ -5,21 +5,8 @@ class Puppet::Provider::XCatObject < Puppet::Provider
             :rmdef => '/opt/xcat/bin/rmdef',
             :chdef => '/opt/xcat/bin/chdef'
             
-  def initialize(value={})
-    super(value)
-    @property_flush = {}
-  end
-            
-  def self.instances
-    # lsdef
-    
-    list_obj().collect { |obj|
-      new(make_hash(obj))
-    }
-  end
-  
   def list_obj (obj_name = nil)
-    cmd_list = ["-l", "-t", xcat_type]
+    cmd_list = ["-l", "-t", xcat_type()]
     if (obj_name) 
       cmd_list += ["-o", obj_name]
     end
@@ -38,46 +25,23 @@ class Puppet::Provider::XCatObject < Puppet::Provider
   
   def make_hash(obj_str)
     hash_list = obj_str.split("\n")
-    inst_name = hash.shift
+    inst_name = hash_list.shift
     inst_hash = Hash.new
     inst_hash[:name]   = inst_name
     inst_hash[:ensure] = :present
     hash_list.each { |line|
       key, value = line.split("=")
+      # Puppet.debug "#{key} == #{value}"
       inst_hash[key.lstrip] = value
+      # Puppet.debug "#{key.lstrip} == #{inst_hash[key.lstrip]}"
     }
-    inst_hash
+    # Puppet.debug pp inst_hash
+    Puppet::Util::symbolizehash(inst_hash)
   end
-  
-  def self.prefetch(resources)
-    instances.each do |prov|
-      if resource = resources[prov.name]
-        resource.provider = prov
-      end
-    end
-  end
-  
-  def exists?
-    @property_hash[:ensure] == :present
-  end
-  
-  # mk_resource_methods foreach child
-  
-  def xcat_type
-    raise Puppet::DevError, "xcat_type for #{self.name} provider has not been defined.  Unable to use xcat object commands."
-  end
-  
-  def create
-    @property_flush[:ensure] = :present
-  end
-  
-  def destroy
-    @property_flush[:ensure] = :absent
-  end
-  
-  def flush
+
+  def doflush
     if @property_flush
-      cmd_list = ["-t", xcat_type, "-o", :name]
+      cmd_list = ["-t", self.xcat_type(), "-o", resource[:name]]
       if (@property_flush[:ensure] == :absent)
         # rmdef
         begin
@@ -87,8 +51,11 @@ class Puppet::Provider::XCatObject < Puppet::Provider
         end
         @property_hash.clear
       else
-        @property_flush.each { |key, value|
-          if (key != :name && key != :ensure) 
+        resource.to_hash.each { |key, value|
+          if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key) 
+            if value.is_a?(Array)
+              value = value.join()
+            end
             cmd_list += ["#{key}=#{value}"]
           end
         }
@@ -111,6 +78,6 @@ class Puppet::Provider::XCatObject < Puppet::Provider
       @property_flush = nil
     end
     # refresh @property_hash
-    @property_hash = make_hash(list_obj(:name)[0])
+    @property_hash = self.make_hash(list_obj(resource[:name])[0])
   end
 end
