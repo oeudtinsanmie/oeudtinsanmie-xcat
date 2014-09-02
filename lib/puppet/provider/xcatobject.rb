@@ -1,5 +1,7 @@
 class Puppet::Provider::XCatObject < Puppet::Provider
 
+  # Without initvars commands won't work.
+  initvars
   commands  :lsdef => '/opt/xcat/bin/lsdef',
             :mkdef => '/opt/xcat/bin/mkdef',
             :rmdef => '/opt/xcat/bin/rmdef',
