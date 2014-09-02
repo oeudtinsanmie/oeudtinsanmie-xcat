@@ -1,13 +1,19 @@
-class Puppet::Provider::XCatObject < Puppet::Provider
+class Puppet::Provider::Xcatobject < Puppet::Provider
 
   # Without initvars commands won't work.
   initvars
   commands  :lsdef => '/opt/xcat/bin/lsdef',
             :mkdef => '/opt/xcat/bin/mkdef',
             :rmdef => '/opt/xcat/bin/rmdef',
-            :chdef => '/opt/xcat/bin/chdef'
-            
+            :chdef => '/opt/xcat/bin/chdef'  
+          
   def list_obj (xcat_type, obj_name = nil)
+    list_obj_strings(xcat_type, obj_name).collect { |objstr|
+        make_hash(objstr)
+    }
+  end
+
+  def list_obj_strings (xcat_type, obj_name = nil)
     cmd_list = ["-l", "-t", xcat_type]
     if (obj_name) 
       cmd_list += ["-o", obj_name]
