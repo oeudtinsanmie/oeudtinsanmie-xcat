@@ -1,4 +1,3 @@
-require 'pp'
 Puppet::Type.type(:xcat_copycds).provide(:xcat) do
 
   commands  :copycds => '/opt/xcat/sbin/copycds',
@@ -21,14 +20,12 @@ Puppet::Type.type(:xcat_copycds).provide(:xcat) do
 
   def self.instances
     # lsdef
-    p "Instances: ..."
     list_obj.collect { |obj|
       new(make_hash(obj))
     }
   end
 
   def self.list_obj
-    p "Collecting list of obj"
     root = "/install"
     maxdepth = 2
     mindepth = 2
@@ -37,20 +34,22 @@ Puppet::Type.type(:xcat_copycds).provide(:xcat) do
     begin
       output = find(cmd_list)
     rescue Puppet::ExecutionFailure => e
-      p "find #{cmd_list.join(' ')} had an error -> #{e.inspect}"
       raise Puppet::DevError, "find #{cmd_list.join(' ')} had an error -> #{e.inspect}"
     end
 
     obj_strs = output.lines.select { |s| 
-      validEntry? s  }
-    p obj_strs
-    obj_strs
+      validEntry? s
+    }
   end
   
   def self.validEntry? (s) 
-    if s.count("/") <= 2 then return false
+    if s.count("/") <= 2 
+      return false
+    end
     @ignore_dirs.each { | ign |
-      if s.include? ign then return false
+      if s.include? ign 
+        return false
+      end
     }
     true
   end
@@ -69,12 +68,10 @@ Puppet::Type.type(:xcat_copycds).provide(:xcat) do
     inst_hash[:arch]   = hash_list[1]
     inst_hash[:ensure] = :present
     inst_hash[:name] = "#{inst_hash[:distro]}-#{inst_hash[:arch]}"
-    pp inst_hash
     inst_hash
   end
 
   def self.prefetch(resources)
-    p "Prefetching"
     instances.each do |prov|
       if resource = resources[prov.name]
         resource.provider = prov
