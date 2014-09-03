@@ -5,11 +5,6 @@ Puppet::Type.type(:xcat_network).provide(:xcat, :parent => Puppet::Provider::Xca
   
   @xcat_type = "network"
   
-  def initialize(value={})
-    super(value)
-    @property_flush = {}
-  end
-            
   def self.instances
     list_obj(@xcat_type).collect { |obj|
       new(obj)
@@ -37,15 +32,6 @@ Puppet::Type.type(:xcat_network).provide(:xcat, :parent => Puppet::Provider::Xca
   end
   
   def flush
-    begin
-      super.doflush(@xcat_type)
-      
-      @property_flush = nil
-      # refresh @property_hash
-      @property_hash = list_obj(@xcat_type, resource[:name])[0]
-    rescue Exception => e
-      @property_hash.clear
-      raise Puppet::Error, e
-    end
+    doflush
   end
 end
