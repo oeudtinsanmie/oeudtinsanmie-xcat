@@ -38,8 +38,7 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
     begin
       output = lsdef(cmd_list)
     rescue Puppet::ExecutionFailure => e
-      Puppet.debug "lsdef had an error -> #{e.inspect}"
-      return {}
+      raise Puppet::DevError, "lsdef #{cmd_list.join(' ')} had an error -> #{e.inspect}"
     end
     
     obj_strs = output.split("Object name: ")
@@ -73,7 +72,7 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
         rmdef(cmd_list)
         @property_flush = nil
       rescue Puppet::ExecutionFailure => e
-        raise Puppet::Error, "rmdef #{cmd_list} failed to run: #{e}"
+        raise Puppet::DevError, "rmdef #{cmd_list.join(' ')} failed to run: #{e}"
       end
     else
       resource.to_hash.each { |key, value|
@@ -92,14 +91,14 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
         begin
           mkdef(cmd_list)
         rescue Puppet::ExecutionFailure => e
-          raise Puppet::Error, "mkdef #{cmd_list} failed to run: #{e}"
+          raise Puppet::DevError, "mkdef #{cmd_list.join(' ')} failed to run: #{e}"
         end
       else
         # chdef
         begin
           chdef(cmd_list)
         rescue Puppet::ExecutionFailure => e
-          raise Puppet::Error, "chdef #{cmd_list} failed to run: #{e}"
+          raise Puppet::DevError, "chdef #{cmd_list.join(' ')} failed to run: #{e}"
         end
       end
     end
