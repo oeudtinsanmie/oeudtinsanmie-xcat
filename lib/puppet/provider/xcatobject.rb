@@ -64,7 +64,7 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
   end
 
   def doflush
-    cmd_list = ["-t", xcat_type, "-o", resource[:name]]
+    cmd_list = ["-t", @xcat_type, "-o", resource[:name]]
     if (@property_flush and @property_flush[:ensure] == :absent)
       # rmdef
       begin
@@ -74,7 +74,7 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
         raise Puppet::Error, "rmdef #{cmd_list} failed to run: #{e}"
       end
     else
-    @resource.to_hash.each { |key, value|
+    resource.to_hash.each { |key, value|
       if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key)
         if value.is_a?(Array)
           Puppet.debug "Setting #{key} = #{value.join(',')}"
