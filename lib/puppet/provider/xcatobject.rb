@@ -63,53 +63,42 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
     Puppet::Util::symbolizehash(inst_hash)
   end
 
-  def doflush (xcat_type)
-    Puppet.debug "This is a test"
-#    Puppet.debug pp resource
-    Puppet.debug "Flushing property hash:"
-    pp @property_hash
-    "Woot!"
-  end
-
-  def othermethod
-    if @property_flush
-      cmd_list = ["-t", xcat_type, "-o", resource[:name]]
-      if (@property_flush[:ensure] == :absent)
-        # rmdef
-        begin
-          rmdef(cmd_list)
-        rescue Puppet::ExecutionFailure => e
-          raise Puppet::Error, "rmdef #{cmd_list} failed to run: #{e}"
-        end
-      else
-        @resource.to_hash.each { |key, value|
-          if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key)
-            if value.is_a?(Array)
-              Puppet.debug "Setting #{key} = #{value.join(',')}"
-              cmd_list += ["#{key}=#{value.join(',')}"]
-            else
-              Puppet.debug "Setting #{key} = #{value}"
-              cmd_list += ["#{key}=#{value}"]
-            end
-          end
-        }
-        if (@property_flush[:ensure] == :present)
-          # mkdef
-          begin
-            mkdef(cmd_list)
-          rescue Puppet::ExecutionFailure => e
-            raise Puppet::Error, "mkdef #{cmd_list} failed to run: #{e}"
-          end
+  def doflush
+    cmd_list = ["-t", xcat_type, "-o", resource[:name]]
+    if (@property_flush and @property_flush[:ensure] == :absent)
+      # rmdef
+      begin
+        rmdef(cmd_list)
+        @property_flush = nil
+      rescue Puppet::ExecutionFailure => e
+        raise Puppet::Error, "rmdef #{cmd_list} failed to run: #{e}"
+      end
+    else
+    @resource.to_hash.each { |key, value|
+      if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key)
+        if value.is_a?(Array)
+          Puppet.debug "Setting #{key} = #{value.join(',')}"
+          cmd_list += ["#{key}=#{value.join(',')}"]
         else
-          # chdef
-          begin
-            chdef(cmd_list)
-          rescue Puppet::ExecutionFailure => e
-            raise Puppet::Error, "chdef #{cmd_list} failed to run: #{e}"
-          end
+          Puppet.debug "Setting #{key} = #{value}"
+          cmd_list += ["#{key}=#{value}"]
         end
       end
+    }
+    if (@property_flush and @property_flush[:ensure] == :present)
+      # mkdef
+      begin
+        mkdef(cmd_list)
+      rescue Puppet::ExecutionFailure => e
+        raise Puppet::Error, "mkdef #{cmd_list} failed to run: #{e}"
+      end
+    else
+      # chdef
+      begin
+        chdef(cmd_list)
+      rescue Puppet::ExecutionFailure => e
+        raise Puppet::Error, "chdef #{cmd_list} failed to run: #{e}"
+      end
     end
-    "boo"
   end
 end
