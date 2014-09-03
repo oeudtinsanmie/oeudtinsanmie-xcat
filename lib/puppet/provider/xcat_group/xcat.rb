@@ -5,11 +5,6 @@ Puppet::Type.type(:xcat_group)(:xcat, :parent => Puppet::Provider::Xcatobject) d
   
   @xcat_type = "group"
   
-  def initialize(value={})
-    super(value)
-    @property_flush = {}
-  end
-            
   def self.instances
     list_obj(@xcat_type).collect { |obj|
       new(obj)
@@ -37,15 +32,6 @@ Puppet::Type.type(:xcat_group)(:xcat, :parent => Puppet::Provider::Xcatobject) d
   end
   
   def flush
-    begin
-      super.doflush(@xcat_type)
-      
-      @property_flush = nil
-      # refresh @property_hash
-      @property_hash = list_obj(@xcat_type, resource[:name])[0]
-    rescue Exception => e
-      @property_hash.clear
-      raise Puppet::Error, e
-    end
+    doflush
   end
-end 
+end
