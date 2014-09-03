@@ -1,3 +1,4 @@
+require 'pp'
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'xcatobject'))
 Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider::Xcatobject) do
 
@@ -5,11 +6,6 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider::Xcatob
   
   @xcat_type = "node"
   
-  def initialize(value={})
-    super(value)
-    @property_flush = {}
-  end
-            
   def self.instances
     list_obj(@xcat_type).collect { |obj|
       new(obj)
@@ -37,16 +33,11 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider::Xcatob
   end
   
   def flush
-    begin
-      super.doflush(@xcat_type)
-      
-      @property_flush = nil
-      # refresh @property_hash
-      @property_hash = list_obj(@xcat_type, resource[:name])[0]
-    rescue Exception => e
-      @property_hash.clear
-      raise Puppet::Error, e
-    end
+    Puppet.debug "Flushing changes:"
+    Puppet.debug doflush(@xcat_type)
+    Puppet.debug "whew"
+    pp resource.to_hash
+    # refresh @property_hash
   end
 end
 

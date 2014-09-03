@@ -7,6 +7,11 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
             :mkdef => '/opt/xcat/bin/mkdef',
             :rmdef => '/opt/xcat/bin/rmdef',
             :chdef => '/opt/xcat/bin/chdef'  
+  
+  def initialize(value={})
+    super(value)
+    @property_flush = {}
+  end
 
   def list_obj (xcat_type, obj_name = nil)
     Puppet.debug "Listing xcat objects of type #{xcat_type}"
@@ -64,17 +69,8 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
   end
 
   def doflush (xcat_type)
-    Puppet.debug "This is a test"
-#    Puppet.debug pp resource
-    Puppet.debug "Flushing property hash:"
-    pp @property_hash
-    "Woot!"
-  end
-
-  def othermethod
-    if @property_flush
-      cmd_list = ["-t", xcat_type, "-o", resource[:name]]
-      if (@property_flush[:ensure] == :absent)
+    cmd_list = ["-t", xcat_type, "-o", resource[:name]]
+    if(@property_flush && @property_flush[:ensure] == :absent)
         # rmdef
         begin
           rmdef(cmd_list)
