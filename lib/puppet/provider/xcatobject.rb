@@ -1,4 +1,3 @@
-require 'pp'
 class Puppet::Provider::Xcatobject < Puppet::Provider
 
   # Without initvars commands won't work.
@@ -57,9 +56,7 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
       else
         inst_hash[key.lstrip] = value
       end
-      # Puppet.debug "#{key.lstrip} == #{inst_hash[key.lstrip]}"
     }
-    # Puppet.debug pp inst_hash
     Puppet::Util::symbolizehash(inst_hash)
   end
 
