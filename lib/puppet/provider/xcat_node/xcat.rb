@@ -32,7 +32,6 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider::Xcatob
   end
   
   def flush
-    Puppet.debug "Flushing changes:"
     doflush
   end
 end
