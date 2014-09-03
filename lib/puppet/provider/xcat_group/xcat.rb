@@ -5,33 +5,4 @@ Puppet::Type.type(:xcat_group)(:xcat, :parent => Puppet::Provider::Xcatobject) d
   
   @xcat_type = "group"
   
-  def self.instances
-    list_obj(@xcat_type).collect { |obj|
-      new(obj)
-    }
-  end
-  
-  def self.prefetch(resources)
-    instances.each do |prov|
-      if resource = resources[prov.name]
-        resource.provider = prov
-      end
-    end
-  end
-
-  def exists?
-    @property_hash[:ensure] == :present
-  end
-  
-  def create
-    @property_flush[:ensure] = :present
-  end
-  
-  def destroy
-    @property_flush[:ensure] = :absent
-  end
-  
-  def flush
-    doflush
-  end
 end

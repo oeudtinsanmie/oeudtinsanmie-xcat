@@ -7,6 +7,32 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
             :rmdef => '/opt/xcat/bin/rmdef',
             :chdef => '/opt/xcat/bin/chdef'  
 
+  def self.instances
+    list_obj(@xcat_type).collect { |obj|
+      new(obj)
+    }
+  end
+  
+  def self.prefetch(resources)
+    instances.each do |prov|
+      if resource = resources[prov.name]
+        resource.provider = prov
+      end
+    end
+  end
+
+  def exists?
+    @property_hash[:ensure] == :present
+  end
+  
+  def create
+    @property_flush[:ensure] = :present
+  end
+  
+  def destroy
+    @property_flush[:ensure] = :absent
+  end
+  
   def list_obj (xcat_type, obj_name = nil)
     Puppet.debug "Listing xcat objects of type #{xcat_type}"
     if(obj_name) then
@@ -60,7 +86,7 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
     Puppet::Util::symbolizehash(inst_hash)
   end
 
-  def doflush
+  def flush
     cmd_list = ["-t", @xcat_type, "-o", resource[:name]]
     if (@property_flush and @property_flush[:ensure] == :absent)
       # rmdef

@@ -5,33 +5,4 @@ Puppet::Type.type(:xcat_osdistro).provide(:xcat, :parent => Puppet::Provider::Xc
   
   @xcat_type = "osdistro"
   
-  def self.instances
-    list_obj(@xcat_type).collect { |obj|
-      new(obj)
-    }
-  end
-  
-  def self.prefetch(resources)
-    instances.each do |prov|
-      if resource = resources[prov.name]
-        resource.provider = prov
-      end
-    end
-  end
-
-  def exists?
-    @property_hash[:ensure] == :present
-  end
-  
-  def create
-    @property_flush[:ensure] = :present
-  end
-  
-  def destroy
-    @property_flush[:ensure] = :absent
-  end
-  
-  def flush
-    doflush
-  end
 end
