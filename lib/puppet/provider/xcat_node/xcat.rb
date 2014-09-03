@@ -34,7 +34,7 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider::Xcatob
   
   def flush
     Puppet.debug "Flushing changes:"
-    Puppet.debug doflush(@xcat_type)
+    doflush
     Puppet.debug "whew"
     pp resource.to_hash
     # refresh @property_hash
