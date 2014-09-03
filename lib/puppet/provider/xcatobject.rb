@@ -8,8 +8,8 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
             :chdef => '/opt/xcat/bin/chdef'  
 
   def self.instances
-    list_obj(@xcat_type).collect { |obj|
-      new(obj)
+    list_obj.collect { |obj|
+      new(make_hash(obj))
     }
   end
   
@@ -32,30 +32,9 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
   def destroy
     @property_flush[:ensure] = :absent
   end
-  
-  def list_obj (xcat_type, obj_name = nil)
-    Puppet.debug "Listing xcat objects of type #{xcat_type}"
-    if(obj_name) then
-      Puppet.debug "Looking for object #{obj_name}"
-    end
-  end
 
-  def self.list_obj (xcat_type, obj_name = nil)
-    Puppet.debug "Listing xcat objects of type #{xcat_type}"
-    if(obj_name) then
-      Puppet.debug "Looking for object #{obj_name}"
-    end
-    list_obj_strings(xcat_type, obj_name).collect { |objstr|
-        make_hash(objstr)
-    }
-  end
-
-  def self.list_obj_strings (xcat_type, obj_name = nil)
-    cmd_list = ["-l", "-t", xcat_type]
-    if (obj_name) 
-      cmd_list += ["-o", obj_name]
-    end
-    
+  def self.list_obj
+    cmd_list = ["-l", "-t", @xcat_type]
     begin
       output = lsdef(cmd_list)
     rescue Puppet::ExecutionFailure => e
