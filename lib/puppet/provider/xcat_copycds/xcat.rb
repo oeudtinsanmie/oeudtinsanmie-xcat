@@ -10,7 +10,7 @@ Puppet::Type.type(:xcat_copycds).provide(:xcat) do
   	"lost+found",
   	"prescripts",
   	"postscripts",
-  	"winpostcripts",
+  	"winpostscripts",
   	"autoinst",
   	]
 
@@ -33,15 +33,17 @@ Puppet::Type.type(:xcat_copycds).provide(:xcat) do
     maxdepth = 2
     mindepth = 1
     
-    ingorestr = "\("
+    ignorestr = "\("
+    puts ignorestr
     @ignore_dirs.each { |igdir|
-      ignorestr += " -path /install#{igdir} -o"
+      ignorestr += " -path /install/#{igdir} -o"
     }
-    
-    cmd_list = [root, "-maxdepth" , maxdepth, "-mindepth", mindepth, "-type", "d" ,"#{ignorestr[:-2]} \)", "-prune", "-o", "-print"]
+    ignorestr = ignorestr[0..-3]
+    ignorestr += "\)"
+    cmd_list = [root, "-maxdepth" , maxdepth, "-mindepth", mindepth, "-type", "d" ,"#{ignorestr}", "-prune", "-o", "-print"]
     begin
-      p "find #{cmd_list.join(' ')}"
-      output = find(cmd_list)
+      puts "find #{cmd_list.join(' ')}"
+      output = find(cmd_list.join(' '))
     rescue Puppet::ExecutionFailure => e
       p "find #{cmd_list.join(' ')} had an error -> #{e.inspect}"
       raise Puppet::DevError, "find #{cmd_list.join(' ')} had an error -> #{e.inspect}"
