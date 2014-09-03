@@ -74,30 +74,31 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
         raise Puppet::Error, "rmdef #{cmd_list} failed to run: #{e}"
       end
     else
-    resource.to_hash.each { |key, value|
-      if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key)
-        if value.is_a?(Array)
-          Puppet.debug "Setting #{key} = #{value.join(',')}"
-          cmd_list += ["#{key}=#{value.join(',')}"]
-        else
-          Puppet.debug "Setting #{key} = #{value}"
-          cmd_list += ["#{key}=#{value}"]
+      resource.to_hash.each { |key, value|
+        if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key)
+          if value.is_a?(Array)
+            Puppet.debug "Setting #{key} = #{value.join(',')}"
+            cmd_list += ["#{key}=#{value.join(',')}"]
+          else
+            Puppet.debug "Setting #{key} = #{value}"
+            cmd_list += ["#{key}=#{value}"]
+          end
         end
-      end
-    }
-    if (@property_flush and @property_flush[:ensure] == :present)
-      # mkdef
-      begin
-        mkdef(cmd_list)
-      rescue Puppet::ExecutionFailure => e
-        raise Puppet::Error, "mkdef #{cmd_list} failed to run: #{e}"
-      end
-    else
-      # chdef
-      begin
-        chdef(cmd_list)
-      rescue Puppet::ExecutionFailure => e
-        raise Puppet::Error, "chdef #{cmd_list} failed to run: #{e}"
+      }
+      if (@property_flush and @property_flush[:ensure] == :present)
+        # mkdef
+        begin
+          mkdef(cmd_list)
+        rescue Puppet::ExecutionFailure => e
+          raise Puppet::Error, "mkdef #{cmd_list} failed to run: #{e}"
+        end
+      else
+        # chdef
+        begin
+          chdef(cmd_list)
+        rescue Puppet::ExecutionFailure => e
+          raise Puppet::Error, "chdef #{cmd_list} failed to run: #{e}"
+        end
       end
     end
   end
