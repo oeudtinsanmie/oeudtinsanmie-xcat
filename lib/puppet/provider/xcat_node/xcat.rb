@@ -1,4 +1,3 @@
-require 'pp'
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'xcatobject'))
 Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider::Xcatobject) do
 
@@ -35,9 +34,6 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider::Xcatob
   def flush
     Puppet.debug "Flushing changes:"
     doflush
-    Puppet.debug "whew"
-    pp resource.to_hash
-    # refresh @property_hash
   end
 end
 
