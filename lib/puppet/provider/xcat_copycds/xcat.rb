@@ -31,27 +31,28 @@ Puppet::Type.type(:xcat_copycds).provide(:xcat) do
     p "Collecting list of obj"
     root = "/install"
     maxdepth = 2
-    mindepth = 1
+    mindepth = 2
     
-    ignorestr = "\("
-    puts ignorestr
-    @ignore_dirs.each { |igdir|
-      ignorestr += " -path /install/#{igdir} -o"
-    }
-    ignorestr = ignorestr[0..-3]
-    ignorestr += "\)"
-    cmd_list = [root, "-maxdepth" , maxdepth, "-mindepth", mindepth, "-type", "d" ,"#{ignorestr}", "-prune", "-o", "-print"]
+    cmd_list = [ root, "-maxdepth" , maxdepth, "-mindepth", mindepth ]
     begin
-      puts "find #{cmd_list.join(' ')}"
-      output = find(cmd_list.join(' '))
+      output = find(cmd_list)
     rescue Puppet::ExecutionFailure => e
       p "find #{cmd_list.join(' ')} had an error -> #{e.inspect}"
       raise Puppet::DevError, "find #{cmd_list.join(' ')} had an error -> #{e.inspect}"
     end
 
-    obj_strs = output.lines.select { |s| s.count("/") > 2 }
+    obj_strs = output.lines.select { |s| 
+      validEntry? s  }
     p obj_strs
     obj_strs
+  end
+  
+  def self.validEntry? (s) 
+    if s.count("/") <= 2 then return false
+    @ignore_dirs.each { | ign |
+      if s.include? ign then return false
+    }
+    true
   end
 
   def self.make_hash(obj_str)
