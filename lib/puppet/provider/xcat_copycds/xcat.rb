@@ -6,6 +6,13 @@ Puppet::Type.type(:xcat_copycds).provide(:xcat) do
             :rm      => 'rm'
 
   mk_resource_methods            
+  @ignore_dirs = [
+  	"lost+found",
+  	"prescripts",
+  	"postscripts",
+  	"winpostcripts",
+  	"autoinst",
+  	]
 
   def initialize(value={})
     super(value)
@@ -25,8 +32,13 @@ Puppet::Type.type(:xcat_copycds).provide(:xcat) do
     root = "/install"
     maxdepth = 2
     mindepth = 1
-
-    cmd_list = [root, "-maxdepth" , maxdepth, "-mindepth", mindepth, "-type", "d" ,"\\( -path /install/lost+found -o -path /install/prescripts -o -path /install/postscripts \\)", "-prune", "-o", "-print"]
+    
+    ingorestr = "\("
+    @ignore_dirs.each { |igdir|
+      ignorestr += " -path /install#{igdir} -o"
+    }
+    
+    cmd_list = [root, "-maxdepth" , maxdepth, "-mindepth", mindepth, "-type", "d" ,"#{ignorestr[:-2]} \)", "-prune", "-o", "-print"]
     begin
       p "find #{cmd_list.join(' ')}"
       output = find(cmd_list)
