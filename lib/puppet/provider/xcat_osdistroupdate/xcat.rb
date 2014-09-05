@@ -3,6 +3,6 @@ Puppet::Type.type(:xcat_osdistroupdate).provide(:xcat, :parent => Puppet::Provid
 
   mk_resource_methods
   
-  @xcat_type = "osdistroupdate"
+  @@xcat_type = "osdistroupdate"
   
 end

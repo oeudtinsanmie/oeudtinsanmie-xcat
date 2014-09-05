@@ -3,6 +3,6 @@ Puppet::Type.type(:xcat_route).provide(:xcat, :parent => Puppet::Provider::Xcato
 
   mk_resource_methods
   
-  @xcat_type = "route"
+  @@xcat_type = "route"
   
 end

@@ -3,6 +3,6 @@ Puppet::Type.type(:xcat_network).provide(:xcat, :parent => Puppet::Provider::Xca
 
   mk_resource_methods
   
-  @xcat_type = "network"
+  @@xcat_type = "network"
   
 end
