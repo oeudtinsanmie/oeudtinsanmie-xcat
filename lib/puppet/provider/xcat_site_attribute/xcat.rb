@@ -1,38 +1,26 @@
+require 'pp'
 Puppet::Type.type(:xcat_site_attribute).provide(:xcat) do
 
   mk_resource_methods
   
   def self.instances
-    # lsdef
-    insts = Array.new
-    list_obj().each { |obj|
-      hsh = make_hash(obj)
-      site = hsh.delete(:name)
-      insts += hsh.collect { |key, value|
-        keyvalue = Hash.new
-        keyvalue[:name]   = key
-        keyvalue[:sitename] = site
-        keyvalue[:value]  = value
-        new(keyvalue)
-      }
+    list_obj.collect { |obj|
+      new(make_hash(obj))
     }
-    insts
   end
   
-  @@xcat_type = "site"
-
   def flush
-      if resource[:value].kind_of?(Array)
-        value = resource[:value].join(',')
-      else
-        value = resource[:value]
-      end
-      cmd_list = ["-t", @@xcat_type, "-o", resource[:sitename], "#{resource[:name]}=#{value}"]
-      begin
-        chdef(cmd_list)
-      rescue Puppet::ExecutionFailure => e
-        raise Puppet::Error, "chdef #{cmd_list.join(' ')} failed to run: #{e}"
-      end
+    if resource[:value].kind_of?(Array)
+      value = resource[:value].join(',')
+    else
+      value = resource[:value]
+    end
+    cmd_list = ["-t", "site", "-o", resource[:sitename], "#{resource[:name]}=#{value}"]
+    begin
+      chdef(cmd_list)
+    rescue Puppet::ExecutionFailure => e
+      raise Puppet::Error, "chdef #{cmd_list.join(' ')} failed to run: #{e}"
+    end
   end
   
   commands  :lsdef => '/opt/xcat/bin/lsdef',
@@ -45,8 +33,8 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat) do
   end
   
   def self.list_obj
-    cmd_list = ["-l", "-t", @@xcat_type]
-    
+    cmd_list = ["-l", "-t", "site"]
+
     begin
       output = lsdef(cmd_list)
     rescue Puppet::ExecutionFailure => e
@@ -54,21 +42,30 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat) do
       return {}
     end
     
-    obj_strs = output.split("Object name: ")
-    obj_strs.delete("")
-    obj_strs
+    objstrs = []
+    site_strs = output.split("Object name: ")
+    site_strs.delete("")
+    site_strs.each { |site|
+      hash_list = site.split("\n")
+      sitename = hash_list.shift
+      hash_list.each { |objstr|
+        objstrs += [ "#{sitename}=#{objstr}" ]
+      }
+    }
+    objstrs
   end
   
   def self.make_hash(obj_str)
-    hash_list = obj_str.split("\n")
-    inst_name = hash_list.shift
-    inst_hash = Hash.new
-    inst_hash[:name]   = inst_name
+    inst_hash = {}
     inst_hash[:ensure] = :present
-    hash_list.each { |line|
-      key, value = line.split("=")
-      inst_hash[key.lstrip] = value
-    }
+    site, key, value = obj_str.split("=")
+    inst_hash[:sitename] = site
+    inst_hash[:name] = key.lstrip
+    if (value.include? ",") then 
+      inst_hash[:value] = value.split(",")
+    else
+      inst_hash[:value] = value
+    end
     inst_hash
   end
   

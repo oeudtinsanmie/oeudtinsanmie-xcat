@@ -3,6 +3,6 @@ Puppet::Type.type(:xcat_firmware).provide(:xcat, :parent => Puppet::Provider::Xc
 
   mk_resource_methods
   
-  @@xcat_type = "firmware"
+  @xcat_type = "firmware"
 
 end
