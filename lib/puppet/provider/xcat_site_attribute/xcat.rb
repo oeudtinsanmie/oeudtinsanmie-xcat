@@ -19,31 +19,20 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat) do
     insts
   end
   
-  def self.xcat_type
-    "site"
-  end
+  @@xcat_type = "site"
 
-  def xcat_type
-    "site"
-  end
-  
   def flush
-    if @property_flush
       if resource[:value].kind_of?(Array)
         value = resource[:value].join(',')
       else
         value = resource[:value]
       end
-      cmd_list = ["-t", xcat_type, "-o", resource[:sitename], "#{resource[:name]}=#{value}"]
+      cmd_list = ["-t", @@xcat_type, "-o", resource[:sitename], "#{resource[:name]}=#{value}"]
       begin
         chdef(cmd_list)
       rescue Puppet::ExecutionFailure => e
-        raise Puppet::Error, "chdef #{cmd_list} failed to run: #{e}"
+        raise Puppet::Error, "chdef #{cmd_list.join(' ')} failed to run: #{e}"
       end
-      @property_flush = nil
-    end
-    # refresh @property_hash
-    @property_hash = resource.to_hash
   end
   
   commands  :lsdef => '/opt/xcat/bin/lsdef',
@@ -53,14 +42,10 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat) do
             
   def initialize(value={})
     super(value)
-    @property_flush = {}
   end
   
-  def self.list_obj (obj_name = nil)
-    cmd_list = ["-l", "-t", xcat_type]
-    if (obj_name) 
-      cmd_list += ["-o", obj_name]
-    end
+  def self.list_obj
+    cmd_list = ["-l", "-t", @@xcat_type]
     
     begin
       output = lsdef(cmd_list)
@@ -100,11 +85,11 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat) do
   end
   
   def create
-    @property_flush[:ensure] = :present
+    @property_hash[:ensure] = :present
   end
   
   def destroy
-    @property_flush[:ensure] = :absent
+    @property_hash[:ensure] = :absent
   end
 end
 
