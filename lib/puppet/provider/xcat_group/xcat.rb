@@ -3,6 +3,6 @@ Puppet::Type.type(:xcat_group)(:xcat, :parent => Puppet::Provider::Xcatobject) d
 
   mk_resource_methods
   
-  @xcat_type = "group"
+  @@xcat_type = "group"
   
 end
