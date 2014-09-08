@@ -3,7 +3,9 @@ Puppet::Type.type(:xcat_node).provide(:xcat, :parent => Puppet::Provider::Xcatob
 
   mk_resource_methods
 
-  @xcat_type = "node"
-  
+  def self.xcat_type
+    "node"
+  end
+
 end
 

@@ -39,7 +39,7 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
   end
 
   def self.list_obj
-    cmd_list = ["-l", "-t", @xcat_type]
+    cmd_list = ["-l", "-t", xcat_type]
     begin
       output = lsdef(cmd_list)
     rescue Puppet::ExecutionFailure => e
@@ -70,7 +70,7 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
   end
 
   def flush
-    cmd_list = ["-t", @xcat_type, "-o", resource[:name]]
+    cmd_list = ["-t", self.class.xcat_type, "-o", resource[:name]]
     if (@property_flush and @property_flush[:ensure] == :absent)
       # rmdef
       begin
