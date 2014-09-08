@@ -97,14 +97,14 @@ Puppet::Type.type(:xcat_copycds).provide(:xcat) do
       root = "/install"
       if (resource[:distro] != nil) 
       	root += "/#{resource[:distro]}"
-	if (resource[:arch] != nill) 
+      	if (resource[:arch] != nill) 
           root += "/#{resource[:arch]}"
-	end
-	begin
-	  cmd_list = ["-rf", root]
-	rescue Puppet::ExecutionFailure => e
-	  raise Puppet::Error, "rm #{cmd_list} failed to run: #{e}"
-	end
+      	end
+      	begin
+      	  cmd_list = ["-rf", root]
+      	rescue Puppet::ExecutionFailure => e
+      	  raise Puppet::Error, "rm #{cmd_list} failed to run: #{e}"
+      	end
       end
     else
       begin

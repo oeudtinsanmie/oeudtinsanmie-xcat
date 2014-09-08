@@ -11,7 +11,14 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat) do
   
   def flush
     if resource[:value].kind_of?(Array)
-      value = resource[:value].join(',')
+      case (self.class.resource_type.property(:value).array_matching)
+        when :all
+        value = resource[:value].join(',')
+        when :first
+        value = resource[:value][0]
+        else
+          raise Puppet::DevError, "Unsupported array matching scheme: #{resource_type.property(param[0]).array_matching}"
+      end
     else
       value = resource[:value]
     end
@@ -59,10 +66,20 @@ Puppet::Type.type(:xcat_site_attribute).provide(:xcat) do
     inst_hash = {}
     inst_hash[:ensure] = :present
     site, key, value = obj_str.split("=")
+    key = key.lstrip
+    
     inst_hash[:sitename] = site
-    inst_hash[:name] = key.lstrip
+    inst_hash[:name] = key
+      
     if (value.include? ",") then 
-      inst_hash[:value] = value.split(",")
+      case (resource_type.property(:value).array_matching)
+        when :all
+          inst_hash[:value] = value.split(",")
+        when :first
+          inst_hash[:value] = value.split(",")[0]
+        else
+          raise Puppet::DevError, "Unsupported array matching scheme: #{resource_type.property(param[0]).array_matching}"
+      end
     else
       inst_hash[:value] = value
     end

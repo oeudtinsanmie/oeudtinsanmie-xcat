@@ -59,11 +59,19 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
     inst_hash[:ensure] = :present
     hash_list.each { |line|
       key, value = line.split("=")
-      # Puppet.debug "#{key} == #{value}"
-      if (value.include? ",") then 
-        inst_hash[key.lstrip] = value.split(",")
+      key = key.lstrip
+      
+      if (value.include? "," and resource_type.validproperty? key) then 
+        case (resource_type.property(key).array_matching)
+          when :all
+            inst_hash[key] = value.split(",")
+          when :first
+            inst_hash[key] = value.split(",")[0]
+          else
+            raise Puppet::DevError, "Unsupported array matching scheme: #{resource_type.property(param[0]).array_matching}"
+        end
       else
-        inst_hash[key.lstrip] = value
+        inst_hash[key] = value
       end
     }
     Puppet::Util::symbolizehash(inst_hash)
@@ -82,9 +90,17 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
     else
       resource.to_hash.each { |key, value|
         if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key)
-          if value.is_a?(Array)
-            Puppet.debug "Setting #{key} = #{value.join(',')}"
-            cmd_list += ["#{key}=#{value.join(',')}"]
+          if value.is_a?(Array) and resource_type.validproperty? key) then 
+            case (self.class.resource_type.property(key).array_matching)
+              when :all
+                Puppet.debug "Setting #{key} = #{value.join(',')}"
+                cmd_list += ["#{key}=#{value.join(',')}"]
+              when :first
+                Puppet.debug "Setting #{key} = #{value.join(',')}"
+                cmd_list += ["#{key}=#{value[0]}"]
+              else
+                raise Puppet::DevError, "Unsupported array matching scheme: #{resource_type.property(param[0]).array_matching}"
+            end
           else
             Puppet.debug "Setting #{key} = #{value}"
             cmd_list += ["#{key}=#{value}"]
