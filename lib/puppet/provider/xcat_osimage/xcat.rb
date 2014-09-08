@@ -3,6 +3,8 @@ Puppet::Type.type(:xcat_osimage)(:xcat, :parent => Puppet::Provider::Xcatobject)
 
   mk_resource_methods
   
-  @xcat_type = "osimage"
-  
+  def self.xcat_type
+     "osimage"
+  end
+      
 end

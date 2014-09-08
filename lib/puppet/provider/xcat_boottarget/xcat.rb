@@ -3,6 +3,8 @@ Puppet::Type.type(:xcat_boottarget).provide(:xcat, :parent => Puppet::Provider::
 
   mk_resource_methods
   
-  @xcat_type = "boottarget"
+  def self.xcat_type
+     "boottarget"
+  end
   
 end
