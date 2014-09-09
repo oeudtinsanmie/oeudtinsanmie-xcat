@@ -226,10 +226,6 @@ Puppet::Type.newtype(:xcat_node) do
     desc 'Set mic to autoboot when mpss start. Valid values: yes|no. Default is yes.'
   end
   
-
-
-
-  
   newproperty(:micvlog) do
     desc 'Set the Verbose Log to console. Valid values: yes|no. Default is no.'
     newvalues(:yes, :no)
@@ -478,30 +474,6 @@ Puppet::Type.newtype(:xcat_node) do
     desc 'Indicates the connectivity of this CEC in the HFI network. A comma separated list of 2 ids. The first one is the supernode number the CEC is part of. The second one is the logical location number (0-3) of this CEC within the supernode.'
   end
 
-newproperty(:nameservers, :array_matching => :all) do
-    desc 'An optional node/group specific override for name server list. Most people want to stick to site or network defined nameserver configuration.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
   newproperty(:supportproxydhcp) do
     desc 'To specify whether the node supports proxydhcp protocol. Valid values: yes or 1, no or 0. Default value is yes.'
     newvalues(:yes, :no, 1, 0)
@@ -640,63 +612,8 @@ newproperty(:nameservers, :array_matching => :all) do
     desc 'The hostname of the xCAT service node (as known by this node). This acts as the default value for nfsserver and tftpserver, if they are not set. If xcatmaster is not set, the node will use whoever responds to its boot request as its master. For the directed bootp case for POWER, it will use the management node if xcatmaster is not set.'
   end
   
-  arrayproperties.each do | pname, pconf |
-    newproperty(pname, :array_matching => :all) do
-      desc pconf[:desc]
-      
-      def insync? (is)
-        # The current value may be nil and we don't
-        # want to call sort on it so make sure we have arrays 
-        # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-        if (is.is_a?(Array) and @should.is_a?(Array)) then
-          is.sort == @should.sort
-        # Also, since parent provider doesn't know which properties are array matching, check for single entry list
-        elsif @should.is_a?(Array) and @should.length == 1
-          is == @should[0]
-        else
-          is == @should
-        end
-      end
-      
-      # These just make it easier to see what is going on in notices and debug statements
-      def should_to_s(newvalue)
-        newvalue.inspect
-      end
-    
-      def is_to_s(currentvalue)
-        currentvalue.inspect
-      end
-      
-      # set a default value, if requested
-      if (pconf[:default]) then
-        defaultto pconf[:default]
-      end
-      
-      # validate that each value in array is one of the valid values
-      if (pconf[:values]) then
-        validate do |value|
-          if (value == nil) then 
-            return
-          end
-#    Don't think I need this
-#          if value.is_a?(Array)
-          value.each { |val|
-            if !pconf[:values].include? val
-              raise ArgumentError, "#{val} is not a valid group for images.  Please use one of [ #{pconf[:values].join(',')} ]"
-            end
-          }
-#          else
-#            # or that the only value is valid
-#            if !pconf[:values].include? value
-#              raise ArgumentError, "#{val} is not a valid group for images.  Please use one of [ #{pconf[:values].join(',')} ]"
-#            end
-#          end
-        end
-      end
-    end
-  end
-  
-  def self.arrayproperties
+  def self.arrayproperties 
+  {
     :sfgmgmtroles => {
       :desc => 'The roles associated with this node as recognized by the cfgmgr for the software that is to be installed and configured. These role names map to chef recipes or puppet manifest classes that should be used for this node. For example, chef OpenStack cookbooks have roles such as mysql-master,keystone, glance, nova-controller, nova-conductor, cinder-all.',
     },  
@@ -767,6 +684,89 @@ newproperty(:nameservers, :array_matching => :all) do
     :vmvirtflags => {
       :desc => '(puppet uses an array for this) General flags used by the virtualization method. For example, in Xen it could, among other things, specify paravirtualized setup, or direct kernel boot. For a hypervisor/dom0 entry, it is the virtualization method (i.e. "xen").',
     },  
+  }
   end
+
+  arrayproperties.each do | pname, pconf |
+    newproperty(pname, :array_matching => :all) do
+      desc pconf[:desc]
+      
+      def insync? (is)
+        # The current value may be nil and we don't
+        # want to call sort on it so make sure we have arrays 
+        # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
+        if (is.is_a?(Array) and @should.is_a?(Array)) then
+          is.sort == @should.sort
+        # Also, since parent provider doesn't know which properties are array matching, check for single entry list
+        elsif @should.is_a?(Array) and @should.length == 1
+          is == @should[0]
+        else
+          is == @should
+        end
+      end
+      
+      # These just make it easier to see what is going on in notices and debug statements
+      def should_to_s(newvalue)
+        newvalue.inspect
+      end
+    
+      def is_to_s(currentvalue)
+        currentvalue.inspect
+      end
+      
+      # set a default value, if requested
+      if (pconf[:default]) then
+        defaultto pconf[:default]
+      end
+      
+      # validate that each value in array is one of the valid values
+      if (pconf[:values]) then
+        validate do |value|
+          if (value == nil) then 
+            return
+          end
+#    Don't think I need this
+#          if value.is_a?(Array)
+          value.each { |val|
+            if !pconf[:values].include? val
+              raise ArgumentError, "#{val} is not a valid group for images.  Please use one of [ #{pconf[:values].join(',')} ]"
+            end
+          }
+#          else
+#            # or that the only value is valid
+#            if !pconf[:values].include? value
+#              raise ArgumentError, "#{val} is not a valid group for images.  Please use one of [ #{pconf[:values].join(',')} ]"
+#            end
+#          end
+        end
+      end
+    end
+  end
+
+  newproperty(:nameservers, :array_matching => :all) do
+    desc 'An optional node/group specific override for name server list. Most people want to stick to site or network defined nameserver configuration.'
+    def insync?(is)
+      # The current value may be nil and we don't
+      # want to call sort on it so make sure we have arrays 
+      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
+      if is.is_a?(Array) and @should.is_a?(Array)
+        is.sort == @should.sort
+      elsif @should.is_a?(Array) and @should.length == 1
+        is == @should[0]
+      else
+        is == @should
+      end
+    end
+
+    def should_to_s(newvalue)
+      newvalue.inspect
+    end
+
+    def is_to_s(currentvalue)
+      currentvalue.inspect
+    end
+  end
+  
+
   
 end
