@@ -1,4 +1,4 @@
-require 'xcatobject'
+require File.expand_path(File.join(File.dirname(__FILE__), 'xcatobject'))
 Puppet::Type.newtype(:xcat_node, :parent => Puppet::Type::Xcatobject) do
   @doc = 'a logical object definition in the xCAT database.'
 
@@ -612,7 +612,7 @@ Puppet::Type.newtype(:xcat_node, :parent => Puppet::Type::Xcatobject) do
     desc 'The hostname of the xCAT service node (as known by this node). This acts as the default value for nfsserver and tftpserver, if they are not set. If xcatmaster is not set, the node will use whoever responds to its boot request as its master. For the directed bootp case for POWER, it will use the management node if xcatmaster is not set.'
   end
   
-  def arrayproperties 
+  def self.arrayproperties 
   {
     :sfgmgmtroles => {
       :desc => 'The roles associated with this node as recognized by the cfgmgr for the software that is to be installed and configured. These role names map to chef recipes or puppet manifest classes that should be used for this node. For example, chef OpenStack cookbooks have roles such as mysql-master,keystone, glance, nova-controller, nova-conductor, cinder-all.',
@@ -690,6 +690,6 @@ Puppet::Type.newtype(:xcat_node, :parent => Puppet::Type::Xcatobject) do
   }
   end  
   
-  decl_unord_arrys
-  
+  decl_unord_arrys()
+
 end

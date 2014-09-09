@@ -1,7 +1,7 @@
 class Puppet::Type::Xcatobject < Puppet::Type
   
-  def decl_unord_arrys 
-    arrayproperties.each do | pname, pconf |
+  def self.decl_unord_arrys 
+    self.arrayproperties.each do | pname, pconf |
       newproperty(pname, :array_matching => :all) do
         desc pconf[:desc]
         
