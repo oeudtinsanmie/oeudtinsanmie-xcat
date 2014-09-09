@@ -52,30 +52,6 @@ Puppet::Type.newtype(:xcat_node) do
     desc 'The name of the configuration manager service. Currently \'chef\' and \'puppet\' are supported services.'
   end
   
-  newproperty(:cfgmgtroles, :array_matching => :all) do
-    desc 'The roles associated with this node as recognized by the cfgmgr for the software that is to be installed and configured. These role names map to chef recipes or puppet manifest classes that should be used for this node. For example, chef OpenStack cookbooks have roles such as mysql-master,keystone, glance, nova-controller, nova-conductor, cinder-all.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
   newproperty(:cfgserver) do
     desc 'The xCAT node name of the chef server or puppet master'
   end
@@ -108,30 +84,6 @@ Puppet::Type.newtype(:xcat_node) do
     desc 'The cpu model name for the node.'
   end
   
-  newproperty(:dhcpinterfaces, :array_matching => :all) do
-    desc 'The network interfaces DHCP server should listen on for the target node. This attribute can be used for management node and service nodes. If defined, it will override the values defined in site.dhcpinterfaces. This is a comma separated list of device names. !remote! indicates a non-local network for relay DHCP. For example: !remote!,eth0,eth1'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
   newproperty(:disksize) do
     desc 'The size of the disks for the node.'
   end
@@ -156,31 +108,6 @@ Puppet::Type.newtype(:xcat_node) do
     desc 'The method to use to get MAC address of the node with the getmac command. If not set, the mgt attribute will be used. Valid values: same as values for mgmt attribute.'
   end
   
-  newproperty(:groups, :array_matching => :all) do
-    desc '(puppet uses an array here) A comma-delimited list of groups this node is a member of. Group names are arbitrary, except all nodes should be part of the \'all\' group. Internal group names are designated by using __<groupname>. For example, __Unmanaged, could be the internal name for a group of nodes that is not managed by xCAT. Admins should avoid using the __ characters when defining their groups.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-    defaultto("all")
-  end
-  
   newproperty(:hcp) do
     desc 'The hardware control point for this node (HMC, IVM, Frame or CEC). Do not need to set for BPAs and FSPs.
     
@@ -201,56 +128,10 @@ Puppet::Type.newtype(:xcat_node) do
     desc 'Specify to the underlying virtualization infrastructure a cluster membership for the hypervisor.'
   end
   
-  newproperty(:hostinterface, :array_matching => :all) do
-    desc '(puppet uses array for this) The definition of interfaces for the hypervisor. The format is [networkname:interfacename:bootprotocol:IP:netmask:gateway] that split with | for each interface'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
+  
   
   newproperty(:hostmanager) do
     desc 'The virtualization specific manager of this hypervisor when applicable'
-  end
-  
-  newproperty(:hostnames, :array_matching => :all) do
-    desc 'Hostname aliases added to /etc/hosts for this node. Comma or blank separated list.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
   end
   
   newproperty(:hosttype) do
@@ -321,30 +202,6 @@ Puppet::Type.newtype(:xcat_node) do
     desc 'The kernel that network boot actions should currently acquire and use. Note this could be a chained boot loader such as memdisk or a non-linux boot loader'
   end
   
-  newproperty(:mac, :array_matching => :all) do
-    desc '(puppet treats this as an array) The mac address or addresses for which xCAT will manage static bindings for this node. This may be simply a mac address, which would be bound to the node name (such as "01:02:03:04:05:0E"). This may also be a "|" delimited string of "mac address!hostname" format (such as "01:02:03:04:05:0E!node5|01:02:03:05:0F!node6-eth1").'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
   newproperty(:memory) do
     desc 'The size of the memory for the node.'
   end
@@ -369,29 +226,9 @@ Puppet::Type.newtype(:xcat_node) do
     desc 'Set mic to autoboot when mpss start. Valid values: yes|no. Default is yes.'
   end
   
-  newproperty(:micpowermgt, :array_matching => :all) do
-    desc '(puppet treats this as an array) Set the Power Management for mic node. This attribute is used to set the power management state that mic may get into when it is idle. Four states can be set: cpufreq, corec6, pc3 and pc6. The valid value for powermgt attribute should be [cpufreq=<on|off>]![corec6=<on|off>]![pc3=<on|off>]![pc6=<on|off>]. e.g. cpufreq=on!corec6=off!pc3=on!pc6=off. Refer to the doc of mic to get more information for power management.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
 
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
 
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
+
   
   newproperty(:micvlog) do
     desc 'Set the Verbose Log to console. Valid values: yes|no. Default is no.'
@@ -414,30 +251,6 @@ Puppet::Type.newtype(:xcat_node) do
     desc 'The machine type and model number of the node. E.g. 7984-6BU'
   end
   
-  newproperty(:nameservers, :array_matching => :all) do
-    desc 'An optional node/group specific override for name server list. Most people want to stick to site or network defined nameserver configuration.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
   newproperty(:netboot) do
     desc 'The type of network booting to use for this node. Valid values: pxe or xnba for x86* architecture, yaboot for POWER architecture.'
   end
@@ -448,198 +261,6 @@ Puppet::Type.newtype(:xcat_node) do
   
   newproperty(:nfsserver) do
     desc 'The NFS or HTTP server for this node (as known by this node).'
-  end
-  
-  newproperty(:nicaliases, :array_matching => :all) do
-    desc '(puppet treats this as an array) Comma-separated list of hostname aliases for each NIC.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
-  newproperty(:niccustomscripts, :array_matching => :all) do
-    desc '(puppet treats this as an array) Comma-separated list of custom scripts per NIC. <nic1>!<script1>,<nic2>!<script2>, e.g. eth0!configeth eth0, ib0!configib ib0. The xCAT object definition commands support to use niccustomscripts.<nicname> as the sub attribute'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
-  newproperty(:nichostnameprefixes, :array_matching => :all) do
-    desc '(puppet treats this as an array) Comma-separated list of hostname prefixes per NIC.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
-  newproperty(:nichostnamesuffixes, :array_matching => :all) do
-    desc '(puppet treats this as an array) Comma-separated list of hostname suffixes per NIC.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
-  newproperty(:nicips, :array_matching => :all) do
-    desc '(puppet treats this as an array) Comma-separated list of IP addresses per NIC.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
-  newproperty(:nicnetworks, :array_matching => :all) do
-    desc '(puppet treats this as an array) Comma-separated list of networks connected to each NIC.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
-  newproperty(:nictypes, :array_matching => :all) do
-    desc '(puppet treats this as an array) Comma-separated list of NIC types per NIC.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
-  newproperty(:nodetype, :array_matching => :all) do
-    desc '(puppet treats this as an array) A comma-delimited list of characteristics of this node. Valid values: ppc, blade, vm (virtual machine), osi (OS image), mm, mn, rsa, switch.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
   end
   
   newproperty(:ondiscover) do
@@ -658,29 +279,7 @@ Puppet::Type.newtype(:xcat_node) do
     wwn=0x50000393c813840c (Install to storage device with given WWN)'
   end
   
-  newproperty(:otherinterfaces, :array_matching => :all) do
-    desc '(puppet treats this as an array) Other IP addresses to add for this node. '
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
 
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
   
   newproperty(:ou) do
     desc 'For an LDAP described machine account (i.e. Active Directory), the orginaztional unit to place the system. If not set, defaults to cn=Computers,dc=your,dc=domain'
@@ -768,30 +367,6 @@ Puppet::Type.newtype(:xcat_node) do
   
   newproperty(:room) do
     desc 'The room where the node is located.'
-  end
-  
-  newproperty(:routenames, :array_matching => :all) do
-    desc '(puppet uses an array for this) A comma separated list of route names that refer to rows in the routes table. These are the routes that should be defined on this node when it is deployed.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
   end
   
   newproperty(:serial) do
@@ -902,9 +477,9 @@ Puppet::Type.newtype(:xcat_node) do
   newproperty(:supernode) do
     desc 'Indicates the connectivity of this CEC in the HFI network. A comma separated list of 2 ids. The first one is the supernode number the CEC is part of. The second one is the logical location number (0-3) of this CEC within the supernode.'
   end
-  
-  newproperty(:supportedarchs, :array_matching => :all) do
-    desc '(puppet uses an array for this) Comma delimited list of architectures this node can execute.'
+
+newproperty(:nameservers, :array_matching => :all) do
+    desc 'An optional node/group specific override for name server list. Most people want to stick to site or network defined nameserver configuration.'
     def insync?(is)
       # The current value may be nil and we don't
       # want to call sort on it so make sure we have arrays 
@@ -1037,102 +612,6 @@ Puppet::Type.newtype(:xcat_node) do
     desc 'Model of NICs that will be provided to VMs (i.e. e1000, rtl8139, virtio, etc)'
   end
   
-  newproperty(:vmnics, :array_matching => :all) do
-    desc '(puppet uses an array for this) Network configuration parameters. Of the general form [physnet:]interface,.. Generally, interface describes the vlan entity (default for native, tagged for tagged, vl[number] for a specific vlan. physnet is a virtual switch name or port description that is used for some virtualization technologies to construct virtual switches. hypervisor.netmap can map names to hypervisor specific layouts, or the descriptions described there may be used directly here where possible.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
-  newproperty(:vmothersetting, :array_matching => :all) do
-    desc '(puppet uses an array for this) This allows specifying a semicolon delimited list of key->value pairs to include in a vmx file of VMware. For partitioning on normal power machines, this option is used to specify the hugepage and/or bsr information, the value is like:\'hugepage:1,bsr=2\'.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
-  newproperty(:vmphyslots, :array_matching => :all) do
-    desc '(puppet uses an array for this) Specify the physical slots drc index that will assigned to the partition, the delimiter is \',\', and the drc index must started with \'0x\'. For more details, please reference to manpage of \'lsvm\'.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
-  newproperty(:vmstorage, :array_matching => :all) do
-    desc '(puppet uses an array for this) A list of storage files or devices to be used. i.e. dir:///cluster/vm/<nodename> or nfs://<server>/path/to/folder/'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
   newproperty(:vmstoragecache) do
     desc 'Select caching scheme to employ. E.g. KVM understands \'none\', \'writethrough\' and \'writeback\''
   end
@@ -1149,30 +628,6 @@ Puppet::Type.newtype(:xcat_node) do
     desc 'Tracks the Psuedo-TTY that maps to the serial port or console of a VM'
   end
   
-  newproperty(:vmvirtflags, :array_matching => :all) do
-    desc '(puppet uses an array for this) General flags used by the virtualization method. For example, in Xen it could, among other things, specify paravirtualized setup, or direct kernel boot. For a hypervisor/dom0 entry, it is the virtualization method (i.e. "xen").'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
   newproperty(:vmvncport) do
     desc 'Tracks the current VNC display port (currently not meant to be set'
   end
@@ -1184,4 +639,134 @@ Puppet::Type.newtype(:xcat_node) do
   newproperty(:xcatmaster) do
     desc 'The hostname of the xCAT service node (as known by this node). This acts as the default value for nfsserver and tftpserver, if they are not set. If xcatmaster is not set, the node will use whoever responds to its boot request as its master. For the directed bootp case for POWER, it will use the management node if xcatmaster is not set.'
   end
+  
+  arrayproperties.each do | pname, pconf |
+    newproperty(pname, :array_matching => :all) do
+      desc pconf[:desc]
+      
+      def insync? (is)
+        # The current value may be nil and we don't
+        # want to call sort on it so make sure we have arrays 
+        # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
+        if (is.is_a?(Array) and @should.is_a?(Array)) then
+          is.sort == @should.sort
+        # Also, since parent provider doesn't know which properties are array matching, check for single entry list
+        elsif @should.is_a?(Array) and @should.length == 1
+          is == @should[0]
+        else
+          is == @should
+        end
+      end
+      
+      # These just make it easier to see what is going on in notices and debug statements
+      def should_to_s(newvalue)
+        newvalue.inspect
+      end
+    
+      def is_to_s(currentvalue)
+        currentvalue.inspect
+      end
+      
+      # set a default value, if requested
+      if (pconf[:default]) then
+        defaultto pconf[:default]
+      end
+      
+      # validate that each value in array is one of the valid values
+      if (pconf[:values]) then
+        validate do |value|
+          if (value == nil) then 
+            return
+          end
+#    Don't think I need this
+#          if value.is_a?(Array)
+          value.each { |val|
+            if !pconf[:values].include? val
+              raise ArgumentError, "#{val} is not a valid group for images.  Please use one of [ #{pconf[:values].join(',')} ]"
+            end
+          }
+#          else
+#            # or that the only value is valid
+#            if !pconf[:values].include? value
+#              raise ArgumentError, "#{val} is not a valid group for images.  Please use one of [ #{pconf[:values].join(',')} ]"
+#            end
+#          end
+        end
+      end
+    end
+  end
+  
+  def self.arrayproperties
+    :sfgmgmtroles => {
+      :desc => 'The roles associated with this node as recognized by the cfgmgr for the software that is to be installed and configured. These role names map to chef recipes or puppet manifest classes that should be used for this node. For example, chef OpenStack cookbooks have roles such as mysql-master,keystone, glance, nova-controller, nova-conductor, cinder-all.',
+    },  
+    :dhcpinterfaces => {
+      :desc => 'The network interfaces DHCP server should listen on for the target node. This attribute can be used for management node and service nodes. If defined, it will override the values defined in site.dhcpinterfaces. This is a comma separated list of device names. !remote! indicates a non-local network for relay DHCP. For example: !remote!,eth0,eth1',
+    },  
+    :groups => {
+      :desc => '(puppet uses an array here) A comma-delimited list of groups this node is a member of. Group names are arbitrary, except all nodes should be part of the \'all\' group. Internal group names are designated by using __<groupname>. For example, __Unmanaged, could be the internal name for a group of nodes that is not managed by xCAT. Admins should avoid using the __ characters when defining their groups.', 
+      :default => "all",
+    },
+    :hostinterface => {
+      :desc => '(puppet uses array for this) The definition of interfaces for the hypervisor. The format is [networkname:interfacename:bootprotocol:IP:netmask:gateway] that split with | for each interface',
+    },  
+    :hostnames => {
+      :desc => 'Hostname aliases added to /etc/hosts for this node. Comma or blank separated list.',
+    },  
+    :mac => {
+      :desc => '(puppet treats this as an array) The mac address or addresses for which xCAT will manage static bindings for this node. This may be simply a mac address, which would be bound to the node name (such as "01:02:03:04:05:0E"). This may also be a "|" delimited string of "mac address!hostname" format (such as "01:02:03:04:05:0E!node5|01:02:03:05:0F!node6-eth1").',
+    },  
+    :micpowermgt => {
+      :desc => '(puppet treats this as an array) Set the Power Management for mic node. This attribute is used to set the power management state that mic may get into when it is idle. Four states can be set: cpufreq, corec6, pc3 and pc6. The valid value for powermgt attribute should be [cpufreq=<on|off>]![corec6=<on|off>]![pc3=<on|off>]![pc6=<on|off>]. e.g. cpufreq=on!corec6=off!pc3=on!pc6=off. Refer to the doc of mic to get more information for power management.',
+    },  
+    :nicaliases => {
+      :desc => '(puppet treats this as an array) Comma-separated list of hostname aliases for each NIC.',
+    },  
+    :niccustomscripts => {
+      :desc => '(puppet treats this as an array) Comma-separated list of custom scripts per NIC. <nic1>!<script1>,<nic2>!<script2>, e.g. eth0!configeth eth0, ib0!configib ib0. The xCAT object definition commands support to use niccustomscripts.<nicname> as the sub attribute',
+    },  
+    :nichostnameprefixes => {
+      :desc => '(puppet treats this as an array) Comma-separated list of hostname prefixes per NIC.',
+    },  
+    :nichostnamesuffixes => {
+      :desc => '(puppet treats this as an array) Comma-separated list of hostname suffixes per NIC.',
+    },  
+    :nicips => {
+      :desc => '(puppet treats this as an array) Comma-separated list of IP addresses per NIC.',
+    },  
+    :nicnetworks => {
+      :desc => '(puppet treats this as an array) Comma-separated list of networks connected to each NIC.',
+    },  
+    :nictypes => {
+      :desc => '(puppet treats this as an array) Comma-separated list of NIC types per NIC.',
+    },  
+    :nodetype => {
+      :desc => '(puppet treats this as an array) A comma-delimited list of characteristics of this node. Valid values: ppc, blade, vm (virtual machine), osi (OS image), mm, mn, rsa, switch.',
+    },  
+    :otherinterfaces => {
+      :desc => '(puppet treats this as an array) Other IP addresses to add for this node. ',
+    },
+    :routenames => {
+      :desc => '(puppet uses an array for this) A comma separated list of route names that refer to rows in the routes table. These are the routes that should be defined on this node when it is deployed.',
+    },
+    :supportedarchs => {
+      :desc => '(puppet uses an array for this) Comma delimited list of architectures this node can execute.',
+    },
+    :vmnics => {
+      :desc => '(puppet uses an array for this) Network configuration parameters. Of the general form [physnet:]interface,.. Generally, interface describes the vlan entity (default for native, tagged for tagged, vl[number] for a specific vlan. physnet is a virtual switch name or port description that is used for some virtualization technologies to construct virtual switches. hypervisor.netmap can map names to hypervisor specific layouts, or the descriptions described there may be used directly here where possible.',
+    },
+    :vmothersetting => {
+      :desc => '(puppet uses an array for this) This allows specifying a semicolon delimited list of key->value pairs to include in a vmx file of VMware. For partitioning on normal power machines, this option is used to specify the hugepage and/or bsr information, the value is like:\'hugepage:1,bsr=2\'.',
+    },
+    :vmphyslots => {
+      :desc => '(puppet uses an array for this) Specify the physical slots drc index that will assigned to the partition, the delimiter is \',\', and the drc index must started with \'0x\'. For more details, please reference to manpage of \'lsvm\'.',
+    },
+    :vmstorage => {
+      :desc => '(puppet uses an array for this) A list of storage files or devices to be used. i.e. dir:///cluster/vm/<nodename> or nfs://<server>/path/to/folder/',
+    },
+    :vmvirtflags => {
+      :desc => '(puppet uses an array for this) General flags used by the virtualization method. For example, in Xen it could, among other things, specify paravirtualized setup, or direct kernel boot. For a hypervisor/dom0 entry, it is the virtualization method (i.e. "xen").',
+    },  
+  end
+  
 end
