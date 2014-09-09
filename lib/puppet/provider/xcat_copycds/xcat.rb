@@ -64,8 +64,8 @@ Puppet::Type.type(:xcat_copycds).provide(:xcat) do
       return {}
     end
     inst_hash = Hash.new
-    inst_hash[:distro] = hash_list[0]
-    inst_hash[:arch]   = hash_list[1]
+    inst_hash[:distro] = hash_list[0].strip
+    inst_hash[:arch]   = hash_list[1].strip
     inst_hash[:ensure] = :present
     inst_hash[:name] = "#{inst_hash[:distro]}-#{inst_hash[:arch]}"
     inst_hash
