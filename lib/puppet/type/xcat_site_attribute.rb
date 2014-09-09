@@ -10,6 +10,8 @@ Puppet::Type.newtype(:xcat_site_attribute) do
     desc 'Name of the xcat site object'
   end
   
+  # This is a way of managing array properties stored as strings and whose order does not matter
+  # And so users can specify a one-entry list or a string, with the same result
   newproperty(:value, :array_matching => :all) do
     desc 'Array of values for this XCat Site Attribute'
     def insync?(is)

@@ -1,4 +1,3 @@
-# This has to be a separate type to enable collecting
 Puppet::Type.newtype(:xcat_osimage) do
   @doc = 'a logical object definition in the xCAT database.'
 
@@ -63,30 +62,6 @@ Puppet::Type.newtype(:xcat_osimage) do
     desc 'The name of a NIM fb_script resource.'
   end
   
-  newproperty(:groups, :array_matching => :all) do
-    desc '(puppet uses an array for this) A comma-delimited list of image groups of which this image is a member. Image groups can be used in the litefile and litetree table instead of a single image name. Group names are arbitrary.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      elsif @should.is_a?(Array) and @should.length == 1
-        is == @should[0]
-      else
-        is == @should
-      end
-    end
-
-    def should_to_s(newvalue)
-      newvalue.inspect
-    end
-
-    def is_to_s(currentvalue)
-      currentvalue.inspect
-    end
-  end
-  
   newproperty(:home) do
     desc 'The name of the NIM home resource.'
   end
@@ -97,20 +72,6 @@ Puppet::Type.newtype(:xcat_osimage) do
   
   newproperty(:imagetype) do
     desc 'The type of operating system image this definition represents (linux,AIX).'
-  end
-  
-  newproperty(:installp_bundle, :array_matching => :all) do
-    desc '(puppet uses an array for this) One or more comma separated NIM installp_bundle resources.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      else
-        is == @should
-      end
-    end
   end
   
   newproperty(:installto) do
@@ -129,20 +90,6 @@ Puppet::Type.newtype(:xcat_osimage) do
     desc 'The version of linux kernel used in the linux image. If the kernel version is not set, the default kernel in rootimgdir will be used'
   end
   
-  newproperty(:kitcomponents, :array_matching => :all) do
-    desc '(puppet uses an array for this) List of Kit Component IDs assigned to this OS Image definition.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      else
-        is == @should
-      end
-    end
-  end
-  
   newproperty(:krpmver) do
     desc 'The rpm version of kernel packages (for SLES only). If it is not set, the default rpm version of kernel packages will be used.'
   end
@@ -153,20 +100,6 @@ Puppet::Type.newtype(:xcat_osimage) do
   
   newproperty(:mksysb) do
     desc 'The name of a NIM mksysb resource.'
-  end
-  
-  newproperty(:netdrivers, :array_matching => :all) do
-    desc '(puppet uses an array for this) The ethernet device drivers of the nodes which will use this linux image, at least the device driver for the nodes\' installnic should be included'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      else
-        is == @should
-      end
-    end
   end
   
   newproperty(:nimmethod) do
@@ -196,36 +129,8 @@ Puppet::Type.newtype(:xcat_osimage) do
     newvalues(:AIX, :Linux)
   end
   
-  newproperty(:osupdatename, :array_matching => :all) do
-    desc '(puppet uses an array for this) A comma-separated list of OS distro updates to apply to this osimage.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      else
-        is == @should
-      end
-    end
-  end
-  
   newproperty(:osvers) do
     desc 'The Linux operating system deployed on this node. Valid values: rhels*,rhelc*, rhas*,centos*,SL*, fedora*, sles* (where * is the version #).'
-  end
-  
-  newproperty(:otherifce, :array_matching => :all) do
-    desc '(puppet uses an array for this) Other network interfaces (e.g. eth1) in the image that should be configured via DHCP'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      else
-        is == @should
-      end
-    end
   end
   
   newproperty(:otherpkgdir) do
@@ -234,20 +139,6 @@ Puppet::Type.newtype(:xcat_osimage) do
   
   newproperty(:otherpkglist) do
     desc 'The fully qualified name of the file that stores non-distro package lists that will be included in the image.'
-  end
-  
-  newproperty(:otherpkgs, :array_matching => :all) do
-    desc '(puppet uses an array for this) One or more comma separated installp or rpm packages. The rpm packages must have a prefix of \'R:\', (ex. R:foo.rpm)'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      else
-        is == @should
-      end
-    end
   end
   
   newproperty(:paging) do
@@ -333,20 +224,6 @@ Puppet::Type.newtype(:xcat_osimage) do
     desc 'The name of the NIM SPOT resource.'
   end
   
-  newproperty(:synclists, :array_matching => :all) do
-    desc '(puppet uses an array for this) The fully qualified name of a file containing a list of files to synchronize on the nodes. Can be a comma separated list of multiple synclist files. The synclist generated by PCM named /install/osimages/<imagename>/synclist.cfm is reserved for use only by PCM and should not be edited by the admin.'
-    def insync?(is)
-      # The current value may be nil and we don't
-      # want to call sort on it so make sure we have arrays 
-      # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
-      if is.is_a?(Array) and @should.is_a?(Array)
-        is.sort == @should.sort
-      else
-        is == @should
-      end
-    end
-  end
-  
   newproperty(:template) do
     desc 'The fully qualified name of the template file that is used to create the kick start file for diskful installation.
     
@@ -362,4 +239,85 @@ Puppet::Type.newtype(:xcat_osimage) do
   newproperty(:winpepath) do
     desc 'The path of winpe which will be used to boot this image. If the real path is /tftpboot/winboot/winpe1/, the value for winpepath should be set to winboot/winpe1'
   end
+  
+  def self.arrayproperties 
+    {
+      :groups => {
+        :desc => '(puppet uses an array for this) A comma-delimited list of image groups of which this image is a member. Image groups can be used in the litefile and litetree table instead of a single image name. Group names are arbitrary.',
+      },
+      :installp_bundle => {
+        :desc => '(puppet uses an array for this) One or more comma separated NIM installp_bundle resources.',
+      },
+      :kitcomponents => {
+        :desc => '(puppet uses an array for this) List of Kit Component IDs assigned to this OS Image definition.',
+      },
+      :netdrivers => {
+        :desc => '(puppet uses an array for this) The ethernet device drivers of the nodes which will use this linux image, at least the device driver for the nodes\' installnic should be included',
+      },
+      :osupdatename => {
+        :desc => '(puppet uses an array for this) A comma-separated list of OS distro updates to apply to this osimage.',
+      },
+      :otherifce => {
+        :desc => '(puppet uses an array for this) Other network interfaces (e.g. eth1) in the image that should be configured via DHCP',
+      },
+      :otherpkgs => {
+        :desc => '(puppet uses an array for this) One or more comma separated installp or rpm packages. The rpm packages must have a prefix of \'R:\', (ex. R:foo.rpm)',
+      },
+      :synclists => {
+        :desc => '(puppet uses an array for this) The fully qualified name of a file containing a list of files to synchronize on the nodes. Can be a comma separated list of multiple synclist files. The synclist generated by PCM named /install/osimages/<imagename>/synclist.cfm is reserved for use only by PCM and should not be edited by the admin.',
+      },
+    }
+  end
+  
+  # This is a unified way of managing array properties stored as strings and whose order does not matter
+  # And so users can specify a one-entry list or a string, with the same result
+  # ideally, this could be in a parent class, but :parent in Type does not currently do anything
+  arrayproperties.each do | pname, pconf |
+    newproperty(pname, :array_matching => :all) do
+      desc pconf[:desc]
+      
+      def insync? (is)
+        # The current value may be nil and we don't
+        # want to call sort on it so make sure we have arrays 
+        # (@ref https://ask.puppetlabs.com/question/2910/puppet-types-with-array-property/)
+        if (is.is_a?(Array) and @should.is_a?(Array)) then
+          is.sort == @should.sort
+        # Also, since parent provider doesn't know which properties are array matching, check for single entry list
+        elsif @should.is_a?(Array) and @should.length == 1
+          is == @should[0]
+        else
+          is == @should
+        end
+      end
+      
+      # These just make it easier to see what is going on in notices and debug statements
+      def should_to_s(newvalue)
+        newvalue.inspect
+      end
+    
+      def is_to_s(currentvalue)
+        currentvalue.inspect
+      end
+      
+      # set a default value, if requested
+      if (pconf[:default]) then
+        defaultto pconf[:default]
+      end
+      
+      # validate that each value in array is one of the valid values
+      if (pconf[:values]) then
+        validate do |value|
+          if (value == nil) then 
+            return
+          end
+          value.each { |val|
+            if !pconf[:values].include? val
+              raise ArgumentError, "#{val} is not a valid group for images.  Please use one of [ #{pconf[:values].join(',')} ]"
+            end
+          }
+        end
+      end
+    end
+  end
+  
 end
