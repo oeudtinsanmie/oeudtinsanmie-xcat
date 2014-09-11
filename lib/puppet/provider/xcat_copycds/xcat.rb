@@ -2,7 +2,7 @@ Puppet::Type.type(:xcat_copycds).provide(:xcat) do
 
   commands  :copycds => '/opt/xcat/sbin/copycds',
 	    :find    => '/bin/find',
-            :rm      => 'rm'
+      :rm      => 'rm'
 
   mk_resource_methods            
   @ignore_dirs = [
@@ -99,7 +99,6 @@ Puppet::Type.type(:xcat_copycds).provide(:xcat) do
       	root += "/#{resource[:distro]}"
         root += "/#{resource[:arch]}"
       	begin
-      	  puts "deleting #{root}"
       	  cmd_list = ["-rf", root]
       	  rm(cmd_list)
       	rescue Puppet::ExecutionFailure => e
