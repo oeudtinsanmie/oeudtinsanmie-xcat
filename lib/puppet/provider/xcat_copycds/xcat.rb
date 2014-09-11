@@ -92,18 +92,18 @@ Puppet::Type.type(:xcat_copycds).provide(:xcat) do
   end
   
   def flush
-    if (@property_flush and @property_flush[:ensure] == :absent)
+    if (@property_flush[:ensure] == :absent)
       # rmdef
       root = "/install"
       if (resource[:distro] != nil) 
       	root += "/#{resource[:distro]}"
-      	if (resource[:arch] != nill) 
-          root += "/#{resource[:arch]}"
-      	end
+        root += "/#{resource[:arch]}"
       	begin
+      	  puts "deleting #{root}"
       	  cmd_list = ["-rf", root]
+      	  rm(cmd_list)
       	rescue Puppet::ExecutionFailure => e
-      	  raise Puppet::Error, "rm #{cmd_list} failed to run: #{e}"
+      	  raise Puppet::DevError, "rm #{cmd_list} failed to run: #{e}"
       	end
       end
     else
@@ -111,7 +111,7 @@ Puppet::Type.type(:xcat_copycds).provide(:xcat) do
         cmd_list = ["-n", resource[:distro], "-a", resource[:arch], resource[:file]]
         copycds(cmd_list)
       rescue Puppet::ExecutionFailure => e
-        raise Puppet::Error, "copycds #{cmd_list} failed to run: #{e}"
+        raise Puppet::DevError, "copycds #{cmd_list} failed to run: #{e}"
       end
     end      
   end
