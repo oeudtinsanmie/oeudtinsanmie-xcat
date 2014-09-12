@@ -521,7 +521,7 @@ Puppet::Type.newtype(:xcat_group) do
   end
   
   newproperty(:serialflow) do
-    desc '(nodehm.serialflow) The flow control value of the serial port for this node. For SOL this is typically 'hard'.'
+    desc '(nodehm.serialflow) The flow control value of the serial port for this node. For SOL this is typically \'hard\'.'
   end
   
   newproperty(:serialport) do

@@ -1,0 +1,19 @@
+{
+  "author": "oeudtinsanmie",
+  "dependencies": [
+    {
+      "name": "maestrodev/wget",
+      "version_requirement": "\u003e\u003d1.4.1"
+    }
+  ],
+  "description": "UNKNOWN",
+  "license": "Apache License, Version 2.0",
+  "name": "oeudtinsanmie-xcat",
+  "operatingsystem_support": [],
+  "project_page": "UNKNOWN",
+  "requirements": [],
+  "source": "UNKNOWN",
+  "summary": "UNKNOWN",
+  "tags": [],
+  "version": "0.0.1"
+}

@@ -35,9 +35,17 @@
 #
 # Copyright 2011 Your name here, unless otherwise noted.
 #
-class xcat {
-    include xcat::params, xcat::installfrom, xcat::yuminstall
+class xcat inherits xcat::params {
+  create_resources(yumrepo, $xcat::params::repos, $xcat::params::defaultrepo)
 
-
-
+  package { $xcat::params::pkg_list : 
+    ensure => "latest",
+    tag => 'xcatpkg',
+  } ->
+  package { $xcat::params::pkg_exclude :
+    ensure => "absent",
+    tag => 'xcatpkg',
+  }
+  
+  Yumrepo <| tag == 'xcatrepo' |> -> Package <| tag == 'xcatpkg' |> 
 }
