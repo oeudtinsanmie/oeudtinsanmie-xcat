@@ -2,7 +2,6 @@
 # force cmdline for debugging
 cmdline
 <% end %>
-
 lang <%= @lang %>
 langsupport <%= @langsupport %>
 
@@ -12,29 +11,21 @@ network --bootproto dhcp
 url --url http://#TABLE:noderes:$NODE:nfsserver#/install/#TABLE:nodetype:$NODE:os#/#TABLE:nodetype:$NODE:arch#
 
 keyboard <%= @keyboard %>
-<% if mouse.length > 0 %>
-mouse <%= @mouse %>
+<% if @mouse.length > 0 %>mouse <%= @mouse %>
 <% end %>
-
-<% if @zerombr == :true %>
-# Clear the MBR
+<% if @zerombr == :true %># Clear the MBR
 zerombr
 <% end %>
-
-<% if !@clearpart.empty? %>
-# Wipe the disk this way
-clearpart <% for @arg in @clearpart %>--<%= @arg %><% end %>
+<% if !@clearpart.empty? %># Wipe the disk this way
+clearpart <% for @arg in @clearpart %>--<%= @arg %> <% end %>
 <% end %>
-
 # partitions
 <% if !@partitions.empty? %>
-<% for @part in @partitions %>
-<%= @part %>
-<% end %>
-<% end %>
+<% for @part in @partitions %><%= @part %>
+<% end %><% end %>
 
 # bootloader config
-bootloader <% for @arg in @bootloaderopts %>--<%= @arg %><% end %>
+bootloader <% for @arg in @bootloaderopts %>--<%= @arg %> <% end %>
 
 # install or upgrade
 <%= @installupgrade %>
@@ -42,11 +33,9 @@ bootloader <% for @arg in @bootloaderopts %>--<%= @arg %><% end %>
 # install mode (default is graphical)
 <%= @installmode %>
 
-<% if !@firewall.empty? %>
-# Firewall config
-firewall <% for @arg in @firewall %>--<%= @arg %><% end %>
+<% if !@firewall.empty? %># Firewall config
+firewall <% for @arg in @firewall %>--<%= @arg %> <% end %>
 <% end %>
-
 #
 # Timezone is managed by xCAT
 # but here are some examples for notation reference
@@ -58,11 +47,9 @@ firewall <% for @arg in @firewall %>--<%= @arg %><% end %>
 #timezone US/Eastern
 timezone --utc "#TABLE:site:key=timezone:value#"
 
-<% if @skipx == :true %>
-# Don't install x gui support
+<% if @skipx == :true %># Don't install x gui support
 skipx
 <% end %>
-
 # Copied from xcat all.tmpl example, including comment, verbatim :P 
 #
 # Geez!
@@ -72,28 +59,22 @@ key --skip
 # root password managed by xCAT
 rootpw --iscrypted #CRYPT:passwd:key=system,username=root:password#
 
-<% if !@authconfig.empty? %>
-# auth config
-authconfig <% for @arg in @authconfig %>--<%= @arg %><% end %>
+<% if !@authconfig.empty? %># auth config
+authconfig <% for @arg in @authconfig %>--<%= @arg %> <% end %>
 <% end %>
-
 #
 # Reboot after installation
 #
 reboot
 
-<% if !@selinux.empty? %>
-# SE Linux
-selinux <% for @arg in @selinux %>--<%= @arg %><% end %>
+<% if !@selinux.empty? %># SE Linux
+selinux <% for @arg in @selinux %>--<%= @arg %> <% end %>
 <% end %>
-
 %packages <% if @resolvedeps == :true %>--resolvedeps<% end %>
 #INCLUDE_DEFAULT_PKGLIST#
 %pre
-<% for @script in @pre %>
-#INCLUDE:#ENV:XCATROOT#/share/xcat/install/scripts/<%= script %>#
+<% for @script in @pre %>#INCLUDE:#ENV:XCATROOT#/share/xcat/install/scripts/<%= @script %>#
 <% end %>
 %post
-<% for @script in @post %>
-#INCLUDE:#ENV:XCATROOT#/share/xcat/install/scripts/<%= script %>#
+<% for @script in @post %>#INCLUDE:#ENV:XCATROOT#/share/xcat/install/scripts/<%= @script %>#
 <% end %>

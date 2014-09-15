@@ -25,6 +25,8 @@ Puppet::Type.newtype(:xcat_node) do
   
   newproperty(:arch) do
     desc 'The hardware architecture of this node. Valid values: x86_64, ppc64, x86, ia64.'
+    newvalues(:x86_64, :ppc64, :x86, :ia64)
+    defaultto :x86_64
   end
   
   newproperty(:authdomain) do
