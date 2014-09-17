@@ -9,7 +9,6 @@ define xcat::template(
   $partitions, # <-- add a sane list here = [],
   $keyboard = 'us',
   $lang = 'en_US',
-  $langsupport = 'en_US',
   $bootloaderopts = [],
   $installupgrade = 'install',
   $installmode = '',
