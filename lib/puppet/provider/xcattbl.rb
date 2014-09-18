@@ -1,3 +1,4 @@
+require 'pp'
 class Puppet::Provider::Xcattbl < Puppet::Provider
 
   # Without initvars commands won't work.
@@ -44,22 +45,28 @@ class Puppet::Provider::Xcattbl < Puppet::Provider
     end
     
     entry_strs = output.split("\n")
-    self.tblkeys = output.delete_at(0)
+    @tblkeys = entry_strs.delete_at(0).delete("#").split(",")
     entry_strs
   end
 
   def self.make_hash(entry_str)
-    inst_hash = {}
+    inst_hash = {
+      :ensure => :present,
+    }
     tblvals = entry_str.split(",")
-    tblkeys.each { | key |
-      tblvals[0].delete! "\""
-      if (tblvals[0].include? ",") then
-        inst_hash[key] = tblvals.delete_at(0).split(',')
+    @tblkeys.each { | key |
+      if (key == keycolumn) then
+        key = "name"
+      end
+      if (tblvals[0] != nil) then
+        tblvals[0].delete! "\""
+        if (tblvals[0].include? ",") then
+          inst_hash[key] = tblvals.delete_at(0).split(',')
+        else
+          inst_hash[key] = tblvals.delete_at(0)
+        end
       else
         inst_hash[key] = tblvals.delete_at(0)
-      end
-      if (inst_hash[key] == '') then
-        inst_hash[key] = nil
       end
     }
     Puppet::Util::symbolizehash(inst_hash)

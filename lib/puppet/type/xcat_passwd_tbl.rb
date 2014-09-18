@@ -4,7 +4,7 @@ Puppet::Type.newtype(:xcat_passwd_tbl) do
   
   ensurable
   
-  newproperty(:key, :namevar=>true) do
+  newparam(:key, :namevar=>true) do
     desc 'the type of component this user/pw is for. Valid values: blade (management module), ipmi (BMC), system (nodes), omapi (DHCP), hmc, ivm, cec, frame, switch.'
     
     newvalues(:blade, :ipmi, :system, :omapi, :hmc, :ivm, :cec, :frame, :switch)
