@@ -71,7 +71,7 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
 
   def flush
     cmd_list = ["-t", self.class.xcat_type, "-o", resource[:name]]
-    if (@property_flush and @property_flush[:ensure] == :absent)
+    if (@property_flush[:ensure] == :absent) then
       # rmdef
       begin
         rmdef(cmd_list)
@@ -91,7 +91,7 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
           end
         end
       }
-      if (@property_flush and @property_flush[:ensure] == :present)
+      if (@property_flush[:ensure] == :present) then
         # mkdef
         begin
           mkdef(cmd_list)

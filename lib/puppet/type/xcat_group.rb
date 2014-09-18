@@ -8,7 +8,7 @@ Puppet::Type.newtype(:xcat_group) do
     desc '(nodegroup.groupname) Name of the group.'
   end
 
-  newparam(:addkmdline) do
+  newproperty(:addkmdline) do
     desc '(bootparams.addkcmdline) User specified one or more parameters to be passed to the kernel'
   end
   
