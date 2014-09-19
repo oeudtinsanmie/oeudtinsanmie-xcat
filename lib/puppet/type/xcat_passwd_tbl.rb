@@ -6,6 +6,14 @@ Puppet::Type.newtype(:xcat_passwd_tbl) do
   
   newparam(:key, :namevar=>true) do
     desc 'the type of component this user/pw is for. Valid values: blade (management module), ipmi (BMC), system (nodes), omapi (DHCP), hmc, ivm, cec, frame, switch.'
+
+    def should_to_s(newvalue)
+      newvalue.inspect
+    end
+    
+    def is_to_s(currentvalue)
+      currentvalue.inspect
+    end
     
     newvalues(:blade, :ipmi, :system, :omapi, :hmc, :ivm, :cec, :frame, :switch)
   end

@@ -13,7 +13,9 @@ class Puppet::Provider::Xcattbl < Puppet::Provider
 
   def self.instances
     list_obj.collect { |obj|
-      new(make_hash(obj))
+      inst = new(make_hash(obj))
+      pp inst
+      inst
     }
   end
   
@@ -56,7 +58,7 @@ class Puppet::Provider::Xcattbl < Puppet::Provider
     tblvals = entry_str.split(",")
     @tblkeys.each { | key |
       if (key == keycolumn) then
-        key = "name"
+        key = :name
       end
       if (tblvals[0] != nil) then
         tblvals[0].delete! "\""
@@ -69,7 +71,9 @@ class Puppet::Provider::Xcattbl < Puppet::Provider
         inst_hash[key] = tblvals.delete_at(0)
       end
     }
-    pp Puppet::Util::symbolizehash(inst_hash)
+    test = Puppet::Util::symbolizehash(inst_hash)
+    pp test
+    puts test[:name].inspect
     Puppet::Util::symbolizehash(inst_hash)
   end
   
@@ -77,6 +81,8 @@ class Puppet::Provider::Xcattbl < Puppet::Provider
     if (@property_flush[:ensure] == :absent) then
       cmd_list = [ "-d", "#{self.class.keycolumn}=#{resource[:name]}", ]
     else
+      pp resource.to_hash
+      pp resource[:name]
       cmd_list = [ "#{self.class.keycolumn}=#{resource[:name]}", ]
       resource.to_hash.each { |key, value|
         if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key)
