@@ -8,7 +8,7 @@ class xcat::params {
       $defaultrepo = {
         enabled  => 1,
         gpgcheck => 1,
-        tag  => "xcatrepos",
+        tag  => "xcatrepo",
       }
       $repos = {
         'xcat-2-core' => {
