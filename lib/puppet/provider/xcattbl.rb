@@ -69,6 +69,7 @@ class Puppet::Provider::Xcattbl < Puppet::Provider
         inst_hash[key] = tblvals.delete_at(0)
       end
     }
+    pp Puppet::Util::symbolizehash(inst_hash)
     Puppet::Util::symbolizehash(inst_hash)
   end
   
