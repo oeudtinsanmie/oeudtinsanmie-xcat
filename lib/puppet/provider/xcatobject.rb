@@ -1,4 +1,5 @@
-class Puppet::Provider::Xcatobject < Puppet::Provider
+require File.expand_path(File.join(File.dirname(__FILE__), '.', 'xcatprovider'))
+class Puppet::Provider::Xcatobject < Puppet::Provider::Xcatprovider
 
   # Without initvars commands won't work.
   initvars
@@ -81,7 +82,7 @@ class Puppet::Provider::Xcatobject < Puppet::Provider
       end
     else
       resource.to_hash.each { |key, value|
-        if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key)
+        if not self.class.puppetkeywords.include?(key)
           if (value.is_a?(Array)) then 
             cmd_list += ["#{key}=#{value.join(',')}"]
             Puppet.debug "Setting #{key} = #{value.join(',')}"

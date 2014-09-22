@@ -1,5 +1,5 @@
-require 'pp'
-class Puppet::Provider::Xcattbl < Puppet::Provider
+require File.expand_path(File.join(File.dirname(__FILE__), '.', 'xcatprovider'))
+class Puppet::Provider::Xcattbl < Puppet::Provider::Xcatprovider
 
   # Without initvars commands won't work.
   initvars
@@ -13,9 +13,7 @@ class Puppet::Provider::Xcattbl < Puppet::Provider
 
   def self.instances
     list_obj.collect { |obj|
-      inst = new(make_hash(obj))
-      pp inst
-      inst
+      new(make_hash(obj))
     }
   end
   
@@ -71,9 +69,6 @@ class Puppet::Provider::Xcattbl < Puppet::Provider
         inst_hash[key] = tblvals.delete_at(0)
       end
     }
-    test = Puppet::Util::symbolizehash(inst_hash)
-    pp test
-    puts test[:name].inspect
     Puppet::Util::symbolizehash(inst_hash)
   end
   
@@ -81,11 +76,9 @@ class Puppet::Provider::Xcattbl < Puppet::Provider
     if (@property_flush[:ensure] == :absent) then
       cmd_list = [ "-d", "#{self.class.keycolumn}=#{resource[:name]}", ]
     else
-      pp resource.to_hash
-      pp resource[:name]
       cmd_list = [ "#{self.class.keycolumn}=#{resource[:name]}", ]
       resource.to_hash.each { |key, value|
-        if not [:name, :ensure, :provider, :loglevel, :before, :after].include?(key)
+        if not self.class.puppetkeywords.include?(key)
           if (value.is_a?(Array)) then 
             cmd_list += ["#{self.class.xcat_tbl}.#{key}=#{value.join(',')}"]
             Puppet.debug "Setting #{self.class.xcat_tbl}.#{key} = #{value.join(',')}"
