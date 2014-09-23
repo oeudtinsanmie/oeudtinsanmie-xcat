@@ -1,19 +1,16 @@
 {
-  "author": "oeudtinsanmie",
+  "name": "oeudtinsanmie-xcat",
+  "version": "0.1.0",
+  "author": "Douglas McClusky",
+  "summary": "Module for installing xCAT and for manipulating xCAT resources as objects or tables, and for pulling and installing base images from remote hosts via wget and copycds.",
+  "license": "Apache License, Version 2.0",
+  "source": "https://github.ncsu.edu/engr-csc-netlabs/puppetmodules.git",
+  "project_page": "https://github.ncsu.edu/engr-csc-netlabs/puppetmodules/xcat",
+  "issues_url": "netlabs@help.ncsu.edu",
   "dependencies": [
     {
-      "name": "maestrodev/wget",
-      "version_requirement": "\u003e\u003d1.4.1"
+		"name": "maestrodev-wget",
+		"version_requirement": ">=1.4.1"
     }
-  ],
-  "description": "UNKNOWN",
-  "license": "Apache License, Version 2.0",
-  "name": "oeudtinsanmie-xcat",
-  "operatingsystem_support": [],
-  "project_page": "UNKNOWN",
-  "requirements": [],
-  "source": "UNKNOWN",
-  "summary": "UNKNOWN",
-  "tags": [],
-  "version": "0.0.1"
+  ]
 }
