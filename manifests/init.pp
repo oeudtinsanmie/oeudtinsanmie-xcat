@@ -19,18 +19,18 @@ class xcat inherits xcat::params {
   
   Yumrepo <| tag == 'xcatrepo' |> -> Package <| tag == 'xcatpkg' |> 
   
-  Class['xcat'] -> Xcat::Template   <| |>
-  Class['xcat'] -> Xcat::Image      <| |>
-  Class['xcat'] -> Xcat_boottarget  <| |>
-  Class['xcat'] -> Xcat_copycds     <| |>
-  Class['xcat'] -> Xcat_firmware    <| |>
-  Class['xcat'] -> Xcat_group       <| |>
-  Class['xcat'] -> Xcat_osdistro    <| |>
-  Class['xcat'] -> Xcat_osdistroupdate <| |>
-  Class['xcat'] -> Xcat_osimage     <| |>
-  Class['xcat'] -> Xcat_passwd_tbl  <| |>
-  Class['xcat'] -> Xcat_route       <| |>
-  Class['xcat'] -> Xcat_network <| |> -> Xcat_node<| |>
-  Class['xcat'] -> Xcat_site_attribute <| |> ~> Service['xcatd']
+  Package <| tag == 'xcatpkg' |> -> Xcat::Template   <| |>
+  Package <| tag == 'xcatpkg' |> -> Xcat::Image      <| |>
+  Package <| tag == 'xcatpkg' |> -> Xcat_boottarget  <| |>
+  Package <| tag == 'xcatpkg' |> -> Xcat_copycds     <| |>
+  Package <| tag == 'xcatpkg' |> -> Xcat_firmware    <| |>
+  Package <| tag == 'xcatpkg' |> -> Xcat_group       <| |>
+  Package <| tag == 'xcatpkg' |> -> Xcat_osdistro    <| |>
+  Package <| tag == 'xcatpkg' |> -> Xcat_osdistroupdate <| |>
+  Package <| tag == 'xcatpkg' |> -> Xcat_osimage     <| |>
+  Package <| tag == 'xcatpkg' |> -> Xcat_passwd_tbl  <| |>
+  Package <| tag == 'xcatpkg' |> -> Xcat_route       <| |>
+  Package <| tag == 'xcatpkg' |> -> Xcat_network     <| |> -> Xcat_node<| |>
+  Package <| tag == 'xcatpkg' |> -> Xcat_site_attribute <| |> ~> Service['xcatd']
   Xcat_network <| ensure == absent |> -> Xcat_network <| ensure != absent |>
 }
