@@ -1,5 +1,12 @@
 class xcat::params {
   
+  $servicedefault = {
+    ensure => running,
+    hasstatus => true,
+    hasrestart => true,
+    enable => true,
+  }
+  
   case $::osfamily {
     'RedHat': {
       $xcatcore_mirror = 'http://sourceforge.net/projects/xcat/files/yum/2.8/xcat-core'
@@ -21,6 +28,11 @@ class xcat::params {
           baseurl => $xcatdep_mirror,
           gpgkey  => "${xcatdep_mirror}${key}",
         },
+      }
+      $service_list = { 
+        "xinetd"  => {}, 
+        "xcatd"   => {},
+        "ipmi"    => {},
       }
     }
   }
