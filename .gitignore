@@ -1,0 +1,13 @@
+*~
+._*
+templates/Makefile*
+templates/*blib
+templates/MYMETA*
+.metadata
+.tmp/
+modules/
+.cpanplus
+.librarian
+.DS_Store
+.project
+
