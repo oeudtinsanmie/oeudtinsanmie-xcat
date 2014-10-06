@@ -10,4 +10,6 @@ modules/
 .librarian
 .DS_Store
 .project
-
+blib
+Makefile*
+.README.md.html
