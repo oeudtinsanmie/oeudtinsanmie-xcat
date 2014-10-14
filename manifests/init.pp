@@ -17,7 +17,7 @@ class xcat inherits xcat::params {
   
   create_resources(service, $xcat::params::service_list, $xcat::params::servicedefault)
   
-  Yumrepo <| tag == 'xcatrepo' |> -> Package <| tag == 'xcatpkg' |> 
+  Yumrepo <| tag == 'xcatrepo' |> -> Package <| tag == 'xcatpkg' |>  -> Service <| tag == "xcat-service" |>
   
   Package <| tag == 'xcatpkg' |> -> Xcat::Template   <| |>
   Package <| tag == 'xcatpkg' |> -> Xcat::Image      <| |>

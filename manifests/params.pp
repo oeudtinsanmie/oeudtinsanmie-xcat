@@ -5,12 +5,20 @@ class xcat::params {
     hasstatus => true,
     hasrestart => true,
     enable => true,
+    tag => "xcat-service",
   }
   
   case $::osfamily {
     'RedHat': {
+      if $lsbmajdistrelease == undef {
+        $majrelease = $::operatingsystemmajrelease
+      }
+      else {
+        $majrelease = $::lsbmajdistrelease
+      }
+
       $xcatcore_mirror = 'http://sourceforge.net/projects/xcat/files/yum/2.8/xcat-core'
-      $xcatdep_mirror  = "http://sourceforge.net/projects/xcat/files/yum/xcat-dep/rh${lsbmajdistrelease}/${architecture}"
+      $xcatdep_mirror  = "http://sourceforge.net/projects/xcat/files/yum/xcat-dep/rh${majrelease}/${architecture}"
       $key     = '/repodata/repomd.xml.key'
       $defaultrepo = {
         enabled  => 1,
