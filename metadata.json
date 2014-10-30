@@ -4,8 +4,8 @@
   "author": "Douglas McClusky",
   "summary": "Module for installing xCAT and for manipulating xCAT resources as objects or tables, and for pulling and installing base images from remote hosts via wget and copycds.",
   "license": "Apache License, Version 2.0",
-  "source": "https://github.ncsu.edu/engr-csc-netlabs/puppetmodules.git",
-  "project_page": "https://github.ncsu.edu/engr-csc-netlabs/puppetmodules/xcat",
+  "source": "https://github.com/oeudtinsanmie/oeudtinsanmie-xcat.git",
+  "project_page": "https://github.com/oeudtinsanmie/oeudtinsanmie-xcat",
   "issues_url": "netlabs@help.ncsu.edu",
   "dependencies": [
     {

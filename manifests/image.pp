@@ -24,6 +24,10 @@ define xcat::image(
   $arch,
 ) {
   if $url != undef {
+    file { $filepath:
+      ensure => directory,
+      links => follow,
+    } ->
     wget::fetch{ $url :
       destination  => $filepath,
       timeout      => 0,
