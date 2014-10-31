@@ -1,3 +1,5 @@
+include stdlib
+
 # Class: xcat::image
 #
 # This class creates an xcat_copycds resource with the given filepath, distro and architecture
@@ -24,7 +26,8 @@ define xcat::image(
   $arch,
 ) {
   if $url != undef {
-    file { $filepath:
+    $directory = dirname($filepath)
+    file { $directory :
       ensure => directory,
       links => follow,
     } ->

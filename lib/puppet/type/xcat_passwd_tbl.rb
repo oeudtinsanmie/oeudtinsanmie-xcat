@@ -15,7 +15,6 @@ Puppet::Type.newtype(:xcat_passwd_tbl) do
       currentvalue.inspect
     end
     
-    newvalues(:blade, :ipmi, :system, :omapi, :hmc, :ivm, :cec, :frame, :switch)
   end
   
   newproperty(:username) do
