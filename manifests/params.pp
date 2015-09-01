@@ -10,6 +10,16 @@ class xcat::params {
   
   case $::osfamily {
     'RedHat': {
+      case $::operatingsystem {
+        'CentOS': {
+          $rmcmd = "/bin/rm"
+          $cpcmd = "/bin/cp"
+        }
+        default: {
+          $rmcmd = "rm"
+          $cpcmd = "cp"
+        }
+      }
       if $lsbmajdistrelease == undef {
         $majrelease = $::operatingsystemmajrelease
       }
@@ -52,5 +62,13 @@ class xcat::params {
 	  "ipmitool",
   ]
   $pkg_exclude = [ "atftp-xcat.${architecture}" ]
+  
+  $firewalls = {
+    '112 reject foward across vlans' => {
+      chain => 'FORWARD',
+      proto => 'all',
+      action => 'reject',
+    },
+  }
 
 }
