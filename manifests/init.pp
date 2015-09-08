@@ -9,6 +9,7 @@ class xcat(
   $mgmt = undef,
   $images = undef,
   $templates = undef,
+  $scripts = undef,
 ) inherits xcat::params {
   create_resources(yumrepo, $xcat::params::repos, $xcat::params::defaultrepo)
 
@@ -53,5 +54,10 @@ class xcat(
   ############## Templates ###################
   if $templates != undef {
     create_resources(xcat::template, $templates)
+  }
+  
+  ############## Pre/Post Scripts ############
+  if $scripts != undef {
+    create_resources(xcat::script, scripts)
   }
 }

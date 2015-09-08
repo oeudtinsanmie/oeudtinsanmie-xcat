@@ -1,6 +1,5 @@
 
 define xcat::mgmt(
-  $buildphase = "start",
   $private_mac,
   $private_if, 
   $private_ip,  
@@ -16,31 +15,29 @@ define xcat::mgmt(
 ) {
 
   ######### Network Interfaces #############
-  if $buildphase == "start" {
-	  if $ipmi != undef {
-	    $ifaces = {
-		    "${private_if}" => {
-		      ipaddress => $private_ip,
-		      macaddress => $private_mac,
-		    },
-		    "${ipmi_if}" => {
-		      ipaddress => $ipmi_ip,
-		      macaddress => $ipmi_mac,
-		    },
-		  }
-	  } else {
-	    $ifaces = {
-	      "${private_if}" => {
-	        ipaddress => $private_ip,
-	        macaddress => $private_mac,
-	      },
-	    }
+  if $ipmi != undef {
+    $ifaces = {
+	    "${private_if}" => {
+	      ipaddress => $private_ip,
+	      macaddress => $private_mac,
+	    },
+	    "${ipmi_if}" => {
+	      ipaddress => $ipmi_ip,
+	      macaddress => $ipmi_mac,
+	    },
 	  }
-	  create_resources(network::if::static, $ifaces, {
-	    ensure => 'up',
-	    netmask   => '255.255.255.0',
-	  })
+  } else {
+    $ifaces = {
+      "${private_if}" => {
+        ipaddress => $private_ip,
+        macaddress => $private_mac,
+      },
+    }
   }
+  create_resources(network::if::static, $ifaces, {
+    ensure => 'up',
+    netmask   => '255.255.255.0',
+  })
     
   ############# xCAT ####################
   create_resources(firewall, $xcatfirewalls, $firewalldefaults)
@@ -95,33 +92,31 @@ define xcat::mgmt(
     sitename => 'clustersite',
     value => "/opt/xcat",
   }  
-  if $buildphase == "start" {
-	  exec { "makehosts" :
-	    command => "/opt/xcat/sbin/makehosts",
-	    refreshonly => "true",
-	  }~>
-	  exec { "rmleases":
-	    command => "${xcat::params::rmcmd} -rf /var/lib/dhcpd/dhcpd.leases",
-	    refreshonly => "true",
-	  }~>   
-	  exec { "makedhcpn" :
-	    command => "/opt/xcat/sbin/makedhcp -n",
-	    refreshonly => "true",
-	  }~>
-	  exec { "makedhcpa" :
-	    command => "/opt/xcat/sbin/makedhcp -a",
-	    refreshonly => "true",
-	  }~>
-	  exec { "makedns"  :
-	    command => "/opt/xcat/sbin/makedns -n",
-	    refreshonly => "true",
-	  }
-	
-	  # Chain declarations for xcat resources
-	  Exec["makehosts"] <~ Xcat::Computer <| |>
-	  Exec["makehosts"] <~ Xcat::Pod <| |>
-	  Exec["makedns"] ~> Service["xcatd"]
+  exec { "makehosts" :
+    command => "/opt/xcat/sbin/makehosts",
+    refreshonly => "true",
+  }~>
+  exec { "rmleases":
+    command => "${xcat::params::rmcmd} -rf /var/lib/dhcpd/dhcpd.leases",
+    refreshonly => "true",
+  }~>   
+  exec { "makedhcpn" :
+    command => "/opt/xcat/sbin/makedhcp -n",
+    refreshonly => "true",
+  }~>
+  exec { "makedhcpa" :
+    command => "/opt/xcat/sbin/makedhcp -a",
+    refreshonly => "true",
+  }~>
+  exec { "makedns"  :
+    command => "/opt/xcat/sbin/makedns -n",
+    refreshonly => "true",
   }
+
+  # Chain declarations for xcat resources
+  Exec["makehosts"] <~ Xcat::Computer <| |>
+  Exec["makehosts"] <~ Xcat::Pod <| |>
+  Exec["makedns"] ~> Service["xcatd"]
 
   ########### Security
   # set up firewalls
@@ -181,7 +176,6 @@ define xcat::mgmt(
       ipmi_mac      => $ipmi_mac,
       system_user   => $system_user,
       system_pw     => $system_pw,
-      buildphase    => $buildphase,
     }
     $newpods = set_xcatpod_defaults($pods, $poddefaults, $masterdefault)
     create_resources(vclmgmt::pod, $newpods)

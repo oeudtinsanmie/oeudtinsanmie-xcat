@@ -1,5 +1,4 @@
 define xcat::network(
-  $buildphase = "start",
   $ensure = present,
   $master_if, 
   $master_mac, 
@@ -30,15 +29,13 @@ define xcat::network(
   }
   else {
     $xcatnet = split($vlan_alias_ip, '\.')
-    if $buildphase == "start" {
-	    network::if::static { "${master_if}.${vlanid}" :
-	      ensure      => 'up',
-	      ipaddress   => $vlan_alias_ip,
-	      netmask     => $netmask,
-	      macaddress  => $master_mac,
-	      vlan        => true,
-	      domain      => $domain,
-	    }
+    network::if::static { "${master_if}.${vlanid}" :
+      ensure      => 'up',
+      ipaddress   => $vlan_alias_ip,
+      netmask     => $netmask,
+      macaddress  => $master_mac,
+      vlan        => true,
+      domain      => $domain,
     }
     $add_interface = "${master_if}.${vlanid}"
     

@@ -5,13 +5,11 @@ module Puppet::Parser::Functions
     masterdefaults  = args[2]
 
     private_default = { 
-      "buildphase"  => masterdefaults["buildphase"],
       "master_if"   => masterdefaults["private_if"], 
       "master_ip"   => masterdefaults["private_ip"], 
       "master_mac"  => masterdefaults["private_mac"] 
     }
     ipmi_default    = { 
-      "buildphase"  => masterdefaults["buildphase"],
       "master_if"   => masterdefaults["ipmi_if"], 
       "master_ip"   => masterdefaults["ipmi_ip"], 
       "master_mac"  => masterdefaults["ipmi_mac"] 

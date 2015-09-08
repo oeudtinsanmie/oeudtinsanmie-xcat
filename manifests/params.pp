@@ -70,5 +70,7 @@ class xcat::params {
       action => 'reject',
     },
   }
-
+  
+  $configphase  = "config"
+  $setupphase   = "setup"
 }
