@@ -6,10 +6,10 @@ include stdlib
 # Removes duplicate packages that may be installed by default, but which interfere with xCAT
 #
 class xcat(
-  $mgmt = undef,
-  $images = undef,
-  $templates = undef,
-  $scripts = undef,
+  $mgmt = hiera_hash("xcat::mgmt", undef),
+  $images = hiera_hash("xcat::images", undef),
+  $templates = hiera_hash("xcat::templates", undef),
+  $scripts = hiera_hash("xcat::scripts", undef),
 ) inherits xcat::params {
   create_resources(yumrepo, $xcat::params::repos, $xcat::params::defaultrepo)
 
