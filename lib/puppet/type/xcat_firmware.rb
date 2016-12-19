@@ -17,7 +17,7 @@ Puppet::Type.newtype(:xcat_firmware) do
   end
 
   newproperty(:disable) do
-    desc 'Set to ’yes’ or ’1’ to comment out this row.'
+    desc "Set to 'yes' or '1' to comment out this row."
   end
 
 end
